@@ -29,7 +29,7 @@ import java.util.List;
 @Slf4j
 @Controller
 public class OrderController {
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     @Resource
     JobAreaMapper jobAreaMapper;
     @Resource
@@ -104,7 +104,7 @@ public class OrderController {
     @PostMapping("/orderAdd")
     public String orderAdd(JobOrder jobOrder, HttpServletRequest request, HttpServletResponse response, boolean isAdd) {
         String date = jobOrder.getTime().substring(0, 10);
-        String duty = jobOrder.getTime().substring(10, jobOrder.getTime().length());
+        String duty = jobOrder.getTime().substring(10);
         try {
             jobOrder.setDate(sdf.parse(date));
         } catch (ParseException e) {
