@@ -1,0 +1,28 @@
+# 服务器配置
+server:
+  port: 8080
+
+# 项目全局配置
+project:
+  name: jobs # 项目名称
+  #  fileUploadPath: /opt/newbee-mall-plus/upload/  # 上传文件的默认url前缀，根据部署设置自行修改，linux下路径
+  fileUploadPath: D:\\upload\\
+
+# mybatis配置
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml    # mapper映射文件位置
+
+# 数据源配置
+spring:
+  datasource:
+    name: dataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3307/jobs?useUnicode=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8&autoReconnect=true&useSSL=false&allowMultiQueries=true&useAffectedRows=true
+    username: root
+    password: root
+# 日志配置
+logging:
+  file:
+    path: d:\\logs
+  level:
+    root: INFO

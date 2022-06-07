@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <!-- 指定数据连接驱动jar地址 -->
+    <classPathEntry location="C:\Users\zfbin\.m2\repository\mysql\mysql-connector-java\8.0.29\mysql-connector-java-8.0.29.jar" />
+    <!-- context 是逆向⼯程的主要配置信息 -->
+    <!-- id：起个名字 -->
+    <!-- targetRuntime：设置⽣成的⽂件适⽤于那个 mybatis 版本 -->
+    <context id="default" targetRuntime="MyBatis3">
+        <!--optional,指在创建class时，对注释进⾏控制-->
+        <commentGenerator>
+            <property name="suppressDate" value="true"/>
+            <!-- 是否去除⾃动⽣成的注释 true：是： false:否 -->
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+        <!--jdbc的数据库连接 wg_insert 为数据库名字-->
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3307/jobs?useSSL=false&amp;characterEncoding=utf8&amp;serverTimezone=Asia/Shanghai"
+                        userId="root"
+                        password="root">
+        </jdbcConnection>
+        <!--⾮必须，类型处理器，在数据库类型和java类型之间的转换控制-->
+        <javaTypeResolver>
+            <!-- 默认情况下数据库中的 decimal，bigInt 在 Java 对应是 sql 下的 BigDecimal 类 -->
+            <!-- 不是 double 和 long 类型 -->
+            <!-- 使⽤常⽤的基本类型代替 sql 包下的引⽤类型 -->
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+        <!-- targetPackage：⽣成的实体类所在的包 -->
+        <!-- targetProject：⽣成的实体类所在的硬盘位置 -->
+        <javaModelGenerator targetPackage="com.amoydays.jobs.entity"
+                            targetProject="src/main/java">
+            <!-- 是否允许⼦包 -->
+            <property name="enableSubPackages" value="false"/>
+            <!-- 是否对modal添加构造函数 -->
+            <property name="constructorBased" value="true"/>
+            <!-- 是否清理从数据库中查询出的字符串左右两边的空⽩字符 -->
+            <property name="trimStrings" value="true"/>
+            <!-- 建⽴modal对象是否不可改变即⽣成的modal对象不会有setter⽅法，只有构造⽅法 -->
+            <property name="immutable" value="false"/>
+        </javaModelGenerator>
+        <!-- targetPackage 和 targetProject：⽣成的 mapper ⽂件的包和位置 -->
+        <sqlMapGenerator targetPackage="mapper"
+                         targetProject="src/main/resources">
+            <!-- 针对数据库的⼀个配置，是否把 schema 作为字包名 -->
+            <property name="enableSubPackages" value="false"/>
+        </sqlMapGenerator>
+        <!-- targetPackage 和 targetProject：⽣成的 interface ⽂件的包和位置 -->
+        <javaClientGenerator type="XMLMAPPER"
+                             targetPackage="com.amoydays.jobs.dao" targetProject="src/main/java">
+            <!-- 针对 oracle 数据库的⼀个配置，是否把 schema 作为字包名 -->
+            <property name="enableSubPackages" value="false"/>
+        </javaClientGenerator>
+        <!-- tableName是数据库中的表名，domainObjectName是⽣成的JAVA模型名，后⾯的参数不⽤改，要⽣成更多的表就在下⾯继续加table标签 -->
+        <table tableName="job_area" domainObjectName="JobArea"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+        </table>
+        <!-- tableName是数据库中的表名，domainObjectName是⽣成的JAVA模型名，后⾯的参数不⽤改，要⽣成更多的表就在下⾯继续加table标签 -->
+        <table tableName="job_goods" domainObjectName="JobGoods"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+        </table>
+        <!-- tableName是数据库中的表名，domainObjectName是⽣成的JAVA模型名，后⾯的参数不⽤改，要⽣成更多的表就在下⾯继续加table标签 -->
+        <table tableName="job_type" domainObjectName="JobType"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+        </table>
+        <!-- tableName是数据库中的表名，domainObjectName是⽣成的JAVA模型名，后⾯的参数不⽤改，要⽣成更多的表就在下⾯继续加table标签 -->
+        <table tableName="job_order" domainObjectName="JobOrder"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+        </table>
+    </context>
+</generatorConfiguration>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amoydays.jobs.dao.JobOrderMapper">
+  <resultMap id="BaseResultMap" type="com.amoydays.jobs.entity.JobOrder">
+    <constructor>
+      <idArg column="ID" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="driver" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="car_num" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="telephone" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="goods_info" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="goods_num" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="time" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="type_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="area_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="goods_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="weight" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="date" javaType="java.util.Date" jdbcType="DATE" />
+      <arg column="duty" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="vessel_voyage" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, driver, car_num, telephone, goods_info, goods_num, time, type_id, area_id, goods_id, 
+    weight, date, duty, vessel_voyage
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from job_order
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByOrderSearch" parameterType="com.amoydays.jobs.vo.OrderSearch" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from job_order
+    <trim prefix="where " suffixOverrides="and">
+      <if test="startDate != null and endDate != null">
+        date between #{startDate} and #{endDate} and
+      </if>
+      <if test="startDuty != null and startDuty == '夜班'">
+        time != CONCAT(#{startDate},'白班') and
+      </if>
+      <if test="telephone != null">
+        telephone = #{telephone} and
+      </if>
+      <if test="endDuty != null and endDuty == '白班'">
+        time != CONCAT(#{endDate},'夜班') and
+      </if>
+      <if test="typeId != null">
+        type_Id = #{typeId} and
+      </if>
+      <if test="areaId != null">
+        area_Id = #{areaId} and
+      </if>
+      <if test="goodsId != null">
+        goods_Id = #{goodsId} and
+      </if>
+    </trim>
+    order by time,type_Id desc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from job_order
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.amoydays.jobs.entity.JobOrder">
+    insert into job_order (ID, driver, car_num, 
+      telephone, goods_info, goods_num, 
+      time, type_id, area_id, 
+      goods_id, weight, date, 
+      duty, vessel_voyage)
+    values (#{id,jdbcType=VARCHAR}, #{driver,jdbcType=VARCHAR}, #{carNum,jdbcType=VARCHAR}, 
+      #{telephone,jdbcType=VARCHAR}, #{goodsInfo,jdbcType=VARCHAR}, #{goodsNum,jdbcType=INTEGER}, 
+      #{time,jdbcType=VARCHAR}, #{typeId,jdbcType=VARCHAR}, #{areaId,jdbcType=VARCHAR}, 
+      #{goodsId,jdbcType=VARCHAR}, #{weight,jdbcType=INTEGER}, #{date,jdbcType=DATE}, 
+      #{duty,jdbcType=VARCHAR}, #{vesselVoyage,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.amoydays.jobs.entity.JobOrder">
+    insert into job_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="driver != null">
+        driver,
+      </if>
+      <if test="carNum != null">
+        car_num,
+      </if>
+      <if test="telephone != null">
+        telephone,
+      </if>
+      <if test="goodsInfo != null">
+        goods_info,
+      </if>
+      <if test="goodsNum != null">
+        goods_num,
+      </if>
+      <if test="time != null">
+        time,
+      </if>
+      <if test="typeId != null">
+        type_id,
+      </if>
+      <if test="areaId != null">
+        area_id,
+      </if>
+      <if test="goodsId != null">
+        goods_id,
+      </if>
+      <if test="weight != null">
+        weight,
+      </if>
+      <if test="date != null">
+        date,
+      </if>
+      <if test="duty != null">
+        duty,
+      </if>
+      <if test="vesselVoyage != null">
+        vessel_voyage,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="driver != null">
+        #{driver,jdbcType=VARCHAR},
+      </if>
+      <if test="carNum != null">
+        #{carNum,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsInfo != null">
+        #{goodsInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsNum != null">
+        #{goodsNum,jdbcType=INTEGER},
+      </if>
+      <if test="time != null">
+        #{time,jdbcType=VARCHAR},
+      </if>
+      <if test="typeId != null">
+        #{typeId,jdbcType=VARCHAR},
+      </if>
+      <if test="areaId != null">
+        #{areaId,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsId != null">
+        #{goodsId,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null">
+        #{weight,jdbcType=INTEGER},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=DATE},
+      </if>
+      <if test="duty != null">
+        #{duty,jdbcType=VARCHAR},
+      </if>
+      <if test="vesselVoyage != null">
+        #{vesselVoyage,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amoydays.jobs.entity.JobOrder">
+    update job_order
+    <set>
+      <if test="driver != null">
+        driver = #{driver,jdbcType=VARCHAR},
+      </if>
+      <if test="carNum != null">
+        car_num = #{carNum,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsInfo != null">
+        goods_info = #{goodsInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsNum != null">
+        goods_num = #{goodsNum,jdbcType=INTEGER},
+      </if>
+      <if test="time != null">
+        time = #{time,jdbcType=VARCHAR},
+      </if>
+      <if test="typeId != null">
+        type_id = #{typeId,jdbcType=VARCHAR},
+      </if>
+      <if test="areaId != null">
+        area_id = #{areaId,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsId != null">
+        goods_id = #{goodsId,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null">
+        weight = #{weight,jdbcType=INTEGER},
+      </if>
+      <if test="date != null">
+        date = #{date,jdbcType=DATE},
+      </if>
+      <if test="duty != null">
+        duty = #{duty,jdbcType=VARCHAR},
+      </if>
+      <if test="vesselVoyage != null">
+        vessel_voyage = #{vesselVoyage,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amoydays.jobs.entity.JobOrder">
+    update job_order
+    set driver = #{driver,jdbcType=VARCHAR},
+      car_num = #{carNum,jdbcType=VARCHAR},
+      telephone = #{telephone,jdbcType=VARCHAR},
+      goods_info = #{goodsInfo,jdbcType=VARCHAR},
+      goods_num = #{goodsNum,jdbcType=INTEGER},
+      time = #{time,jdbcType=VARCHAR},
+      type_id = #{typeId,jdbcType=VARCHAR},
+      area_id = #{areaId,jdbcType=VARCHAR},
+      goods_id = #{goodsId,jdbcType=VARCHAR},
+      weight = #{weight,jdbcType=INTEGER},
+      date = #{date,jdbcType=DATE},
+      duty = #{duty,jdbcType=VARCHAR},
+      vessel_voyage = #{vesselVoyage,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

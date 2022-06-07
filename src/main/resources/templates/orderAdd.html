@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>现代码头作业预登记平台</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="no"/>
+    <meta name="full-screen" content="no"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta content="false" id="twcClient" name="twcClient"/>
+    <link rel="stylesheet" href="/css/style.css"/>
+    <script src="/js/setfont.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/qrcode.js"></script>
+</head>
+<body>
+<div class="searchw">
+    <div class="searchTitle">现代码头作业预登记</div>
+    <div class="searchcont">
+        <div class="ht" style="font-size: 16px; text-align: center; color: red;">备注：14点前可预登记当天夜班之后的4个班次，<br />14点后则预登记隔天夜班之后的4个班次。</div>
+        <form method="post" id="form1">
+            <input type="hidden" name="isAdd" value="true"/>
+            <div class="inputs">
+                <li>
+                    <span>作业类型：</span>
+                    <div class="rbox">
+                        <label th:each="jobType,status:${jobTypeList}">
+                            <input type="radio" name="typeId" th:value="${jobType.id }" th:checked="${status.count==1}"
+                                   th:text="${jobType.name }"></input>
+                        </label>
+                    </div>
+                </li>
+                <li>
+                    <span>作业货名：</span>
+                    <div class="rbox">
+                        <label th:each="jobGoods,status:${jobGoodsList}">
+                            <input type="radio" name="goodsId" th:value="${jobGoods.id }"
+                                   th:checked="${status.count==1}" th:text="${jobGoods.name }"></input>
+                        </label>
+                    </div>
+                </li>
+                <li>
+                    <span>船名航次：</span>
+                    <input type="text" placeholder="不可为空" name="vesselVoyage" id="vesselVoyage" th:value="${jobOrder.vesselVoyage}"/>
+                </li>
+                <!--                <li>-->
+                <!--                    <span>作业区域：</span>-->
+                <!--                    <div class="rbox">-->
+                <!--                        <label th:each="jobArea,status:${jobAreaList}">-->
+                <!--                            <input type="radio" name="areaId" th:value="${jobArea.id }" th:checked="${status.count==1}"-->
+                <!--                                   th:text="${jobArea.name }"></input>-->
+                <!--                        </label>-->
+                <!--                    </div>-->
+                <!--                </li>-->
+                <li>
+                    <span>作业时间：</span>
+                    <div class="rbox">
+                        <label><input type="radio" name="time" th:value="${today }+'夜班'" checked="true"
+                                      th:text="|${today}夜班|"></input></label>
+                        <label><input type="radio" name="time" th:value="${tomorrow }+'白班'"
+                                      th:text="|${tomorrow}白班|"></input></label>
+                        <label><input type="radio" name="time" th:value="${tomorrow }+'夜班'"
+                                      th:text="|${tomorrow}夜班|"></input></label>
+                        <label><input type="radio" name="time" th:value="${tomorrowNext }+'白班'"
+                                      th:text="|${tomorrowNext}白班|"></input></label>
+                    </div>
+                </li>
+                <li>
+                    <span>作业单位：</span>
+                    <input type="text" placeholder="不可为空" name="driver" id="driver" th:value="${jobOrder.driver}"/>
+                </li>
+                <li>
+                    <span>手机号码：</span>
+                    <input type="text" placeholder="不可为空" name="telephone" id="telephone"
+                           th:value="${jobOrder.telephone}"/>
+                </li>
+                <li>
+                    <span>作业件数：</span>
+                    <input type="text" placeholder="件数、重量二选一" name="goodsNum" id="goodsNum"/>
+                </li>
+                <li>
+                    <span>作业重量：</span>
+                    <input type="text" placeholder="件数、重量二选一" name="weight" id="weight"/>
+                </li>
+                <div class="btn">
+                    <input type="button" value="预登记" id="order"/>
+                    <input type="reset" value="重置" id="orderReset"/>
+                    <input type="button" value="预登记查询" onclick="gotoInfoPage()"/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <br/>
+</div>
+
+<script>
+		function gotoInfoPage(){
+			window.location.href="/goOrderInfo";
+		}
+
+		$('#orderReset').on('click', function() {
+			$('#jobOrderid').attr('value','');
+			$('#driver').attr('value','');
+			$('#telephone').attr('value','');
+			$('#goodsNum').attr('value','');
+			$('#weight').attr('value','');
+			$('#vesselVoyage').attr('value','');
+		})
+
+		function cha(form) {
+			if (form.vesselVoyage.value.match(/^\s*$/)) {
+				form.vesselVoyage.focus();
+				alert("船名航次 不能为空!");
+				return false;
+			}
+			if (form.driver.value.match(/^\s*$/)) {
+				form.driver.focus();
+				alert("作业单位 不能为空!");
+				return false;
+			}
+			if (form.telephone.value.match(/^\s*$/)) {
+				form.telephone.focus();
+				alert("手机号码 不能为空!");
+				return false;
+			}
+			if (!form.telephone.value.match(/^[1][3-9][\d]{9}/)) {
+				if (!form.telephone.value.match(/^(\({0,1}\d{3,4})\){0,1}(-){0,1}(\d{7,8})$/)) {
+					form.telephone.focus();
+					alert("请正确输入手机号码或者电话号码!");
+					return false;
+				}
+			}
+			if (form.goodsNum.value.match(/^\s*$/)) {
+				if (form.weight.value.match(/^\s*$/)) {
+					form.goodsNum.focus();
+					alert("件数、重量至少输入一个!");
+					return false;
+				}
+			}
+			//件数不为空
+			if (!form.goodsNum.value.match(/^\s*$/)) {
+				if(!form.goodsNum.value.match(/^[1-9]\d*$/)){
+					form.goodsNum.focus();
+					alert("件数需为整数!");
+					return false;
+				}
+			}
+			//重量不为空
+			if (!form.weight.value.match(/^\s*$/)) {
+				if(!form.weight.value.match(/^[1-9]\d*$/)&&!form.weight.value.match(/^[1-9]\d*\.\d*|0\.\d*[1-9]\d*$/)){
+					form.weight.focus();
+					alert("重量需为数字!");
+					return false;
+				}
+			}
+
+			return true;
+		}
+		$('#order').on('click', function() {
+			if (true == cha(document.getElementById("form1"))) {
+				document.getElementById("form1").action = "/orderAdd";
+				document.getElementById("form1").submit();
+			}
+		})
+
+
+
+</script>
+</body>
+</html>
