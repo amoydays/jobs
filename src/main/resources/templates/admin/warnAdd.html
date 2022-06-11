@@ -17,27 +17,26 @@
 </head>
 <body>
 <div class="searchw">
-    <div class="searchTitle">现代码头通知警示更新</div>
+    <div class="searchTitle">现代码头通知警示登记</div>
     <div class="searchcont">
         <div class="notice"><p th:text="${result }"></p></div>
         <form method="post" id="form1">
-            <input type="hidden" name="id" th:value="${jobWarn.id}"/>
             <div class="inputs">
                 <li>
                     <span>目标单位：</span>
-                    <input type="text" placeholder="目标单位和手机至少选一个" name="driver" id="driver" th:value="${jobWarn.driver}"/>
+                    <input type="text" placeholder="目标单位和手机至少选一个" name="driver" id="driver"/>
                 </li>
                 <li>
                     <span>目标手机：</span>
-                    <input type="text" placeholder="目标单位和手机至少选一个" name="telephone" id="telephone" th:value="${jobWarn.telephone}"/>
+                    <input type="text" placeholder="目标单位和手机至少选一个" name="telephone" id="telephone"/>
                 </li>
                 <li>
                     <span>警示消息：</span>
-                    <input type="text" placeholder="必填项" name="content" id="content" th:value="${jobWarn.content}"/>
+                    <input type="text" placeholder="必填项" name="content" id="content"/>
                 </li>
                 <div class="btn">
-                    <input type="button" value="更新" id="order"/>
-                    <input type="button" value="预登记查询" onclick="goOrderAll()"/>
+                    <input type="button" value="警示登记" id="order"/>
+                    <input type="button" value="警示查询" onclick="warnSearch()"/>
                 </div>
             </div>
         </form>
@@ -46,8 +45,8 @@
 </div>
 
 <script>
-		function goOrderAll(){
-			window.location.href="/goOrderAll";
+		function warnSearch(){
+			window.location.href="/admin/warnSearch";
 		}
 
 		function cha(form) {
@@ -78,7 +77,7 @@
 		}
 		$('#order').on('click', function() {
 			if (true == cha(document.getElementById("form1"))) {
-				document.getElementById("form1").action = "/warnUpdate";
+				document.getElementById("form1").action = "/admin/warnAdd";
 				document.getElementById("form1").submit();
 			}
 		})

@@ -59,17 +59,17 @@ public class AdminController {
         orderSearch.setEndDuty("夜班");
     }
 
-    @GetMapping("/goOrderAll")
+    @RequestMapping("/admin/goOrderAll")
     public String goOrderAll(HttpServletRequest request) {
         setInitNoTime(request);
         OrderSearch orderSearch = new OrderSearch();
         setInitOrderSearchToday(orderSearch);
         request.setAttribute("orderSearch", orderSearch);
 
-        return "orderInfoAll";
+        return "admin/orderInfoAll";
     }
 
-    @PostMapping("/orderSearchAll")
+    @PostMapping("/admin/orderSearchAll")
     public String orderSearchAll(OrderSearch orderSearch, HttpServletRequest request) {
         if (orderSearch != null) {
             if (orderSearch.getStartDate() == null || orderSearch.getStartDate().equals("")) {
@@ -80,10 +80,10 @@ public class AdminController {
         }
         setInitNoTime(request);
 
-        return "orderInfoAll";
+        return "admin/orderInfoAll";
     }
 
-    @GetMapping("/getUpdateString")
+    @GetMapping("/admin/getUpdateString")
     @ResponseBody
     public JobUpdateString getUpdateString() {
         JobUpdateString jobUpdateString = jobUpdateStringMapper.selectOneNoRead();
@@ -94,7 +94,7 @@ public class AdminController {
         return jobUpdateString;
     }
 
-    @GetMapping("/goUpdateRecord")
+    @GetMapping("/admin/goUpdateRecord")
     public String goUpdateRecord(HttpServletRequest request) {
         // 当前时间
         Calendar calendar = Calendar.getInstance();
@@ -108,10 +108,10 @@ public class AdminController {
         request.setAttribute("jobUpdateRecordList", jobUpdateRecordList);
         request.setAttribute("orderSearch", orderSearch);
 
-        return "orderUpdateRecord";
+        return "admin/orderUpdateRecord";
     }
 
-    @PostMapping("/updateRecordSearch")
+    @PostMapping("/admin/updateRecordSearch")
     public String updateRecordSearch(OrderSearch orderSearch, HttpServletRequest request) {
         if (orderSearch == null) {
             return goUpdateRecord(request);
@@ -121,18 +121,18 @@ public class AdminController {
             }
             List<JobUpdateRecord> jobUpdateRecordList = jobUpdateRecordMapper.selectByOrderSearch(orderSearch);
             request.setAttribute("jobUpdateRecordList", jobUpdateRecordList);
-            return "orderUpdateRecord";
+            return "admin/orderUpdateRecord";
         }
     }
 
-    @GetMapping("/goNoticeAdd")
+    @GetMapping("/admin/goNoticeAdd")
     public String goNoticeAdd(HttpServletRequest request) {
         JobNotice jobNotice = jobNoticeMapper.selectTopOne();
         request.setAttribute("jobNotice", jobNotice);
-        return "noticeAdd";
+        return "admin/noticeAdd";
     }
 
-    @PostMapping("/noticeAdd")
+    @PostMapping("/admin/noticeAdd")
     public String noticeAdd(JobNotice jobNotice, HttpServletRequest request) {
         if (jobNotice != null && jobNotice.getContent() != null && !jobNotice.getContent().equals("")) {
             jobNoticeMapper.deleteAll();
@@ -145,12 +145,12 @@ public class AdminController {
         return goNoticeAdd(request);
     }
 
-    @GetMapping("/goWarnAdd")
+    @GetMapping("/admin/goWarnAdd")
     public String goWarnAdd() {
-        return "warnAdd";
+        return "admin/warnAdd";
     }
 
-    @PostMapping("/warnAdd")
+    @PostMapping("/admin/warnAdd")
     public String warnAdd(JobWarn jobWarn, HttpServletRequest request) {
         if (jobWarn != null && jobWarn.getContent() != null && !jobWarn.getContent().equals("")) {
             jobWarn.setTime(new Date());
@@ -158,7 +158,7 @@ public class AdminController {
             jobWarnMapper.insert(jobWarn);
         } else {
             request.setAttribute("result", "警示信息不能为空！");
-            return "warnAdd";
+            return "admin/warnAdd";
         }
 
         // 当前时间
@@ -173,10 +173,10 @@ public class AdminController {
         request.setAttribute("jobWarnList", jobWarnList);
         request.setAttribute("orderSearch", orderSearch);
 
-        return "warnInfo";
+        return "admin/warnInfo";
     }
 
-    @RequestMapping("/warnSearch")
+    @RequestMapping("/admin/warnSearch")
     public String warnSearch(OrderSearch orderSearch, HttpServletRequest request) {
         if (orderSearch == null || orderSearch.getStartDate() == null || orderSearch.getStartDate().equals("")) {
             // 当前时间
@@ -191,18 +191,18 @@ public class AdminController {
         request.setAttribute("jobWarnList", jobWarnList);
         request.setAttribute("orderSearch", orderSearch);
 
-        return "warnInfo";
+        return "admin/warnInfo";
     }
 
-    @GetMapping("/goWarnUpdate")
+    @GetMapping("/admin/goWarnUpdate")
     public String goWarnUpdate(int id, HttpServletRequest request) {
         JobWarn jobWarn = jobWarnMapper.selectByPrimaryKey(id);
         request.setAttribute("jobWarn", jobWarn);
 
-        return "warnUpdate";
+        return "admin/warnUpdate";
     }
 
-    @PostMapping("/warnUpdate")
+    @PostMapping("/admin/warnUpdate")
     public String warnUpdate(JobWarn jobWarn, HttpServletRequest request) {
         if (jobWarn != null && jobWarn.getContent() != null && !jobWarn.getContent().equals("")) {
             jobWarn.setTime(new Date());
@@ -210,7 +210,7 @@ public class AdminController {
             jobWarnMapper.updateByPrimaryKeySelective(jobWarn);
         } else {
             request.setAttribute("result", "警示信息不能为空！");
-            return "warnUpdate";
+            return "admin/warnUpdate";
         }
 
         // 当前时间
@@ -225,10 +225,10 @@ public class AdminController {
         request.setAttribute("jobWarnList", jobWarnList);
         request.setAttribute("orderSearch", orderSearch);
 
-        return "warnInfo";
+        return "admin/warnInfo";
     }
 
-    @GetMapping("/warnDel")
+    @GetMapping("/admin/warnDel")
     @ResponseBody
     public void warnDel(int id) {
         jobWarnMapper.deleteByPrimaryKey(id);

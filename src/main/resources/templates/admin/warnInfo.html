@@ -129,22 +129,22 @@
 		}
 		$('#orderSearch').on('click', function() {
 			if (true == cha(document.getElementById("form1"))) {
-				document.getElementById("form1").action = "/warnSearch";
+				document.getElementById("form1").action = "/admin/warnSearch";
 				document.getElementById("form1").submit();
 			}
 		})
 
 		//进入新增警示
 		function goWarnAdd(){
-			window.location.href="/goWarnAdd";
+			window.location.href="/admin/goWarnAdd";
 		}
 		//进入预登记查询功能
 		function goOrderAll(){
-			window.location.href="/goOrderAll";
+			window.location.href="/admin/goOrderAll";
 		}
 		//进入修改页面
 		function goWarnUpdate(ID){
-			window.location.href="/goWarnUpdate?id="+ID;
+			window.location.href="/admin/goWarnUpdate?id="+ID;
 		}
 		//删除功能
 		$(document).ready(function(){
@@ -163,7 +163,7 @@
 			var params="id="+id+"&randon="+ new Date().getTime();
 			$.ajax({
 			    type: "get",
-				url: "/warnDel",
+				url: "/admin/warnDel",
 				data:params,
 				success: function(responseData, textStatus){
 					alert('删除成功');

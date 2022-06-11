@@ -84,7 +84,7 @@
                     <input type="button" value="重置" onclick="goOrderAll()" class="gotoaddPage"/>
                     <input type="button" value="客户更改查询" onclick="goUpdateRecord()" class="gotoaddPage"/>
                     <input type="button" value="通知消息" onclick="goNoticeAdd()" class="gotoaddPage"/>
-                    <input type="button" value="警示消息" onclick="goWarnAdd()" class="gotoaddPage"/>
+                    <input type="button" value="警示消息" onclick="warnSearch()" class="gotoaddPage"/>
                 </li>
             </div>
         </form>
@@ -137,7 +137,7 @@
             var params="randon="+ new Date().getTime();
 			$.ajax({
 			    type: "get",
-				url: "/getUpdateString",
+				url: "/admin/getUpdateString",
 				data:params,
 				success: function(responseData, textStatus){
 				    if(responseData){
@@ -221,26 +221,26 @@
 		}
 		$('#orderSearch').on('click', function() {
 			if (true == cha(document.getElementById("form1"))) {
-				document.getElementById("form1").action = "/orderSearchAll";
+				document.getElementById("form1").action = "/admin/orderSearchAll";
 				document.getElementById("form1").submit();
 			}
 		})
 
 		//重置
 		function goOrderAll(){
-			window.location.href="/goOrderAll";
+			window.location.href="/admin/goOrderAll";
 		}
 		// 客户更改记录查询
 		function goUpdateRecord(){
-			window.location.href="/goUpdateRecord";
+			window.location.href="/admin/goUpdateRecord";
 		}
 		// 通知消息登记
 		function goNoticeAdd(){
-			window.location.href="/goNoticeAdd";
+			window.location.href="/admin/goNoticeAdd";
 		}
-		// 警示消息登记
-		function goWarnAdd(){
-			window.location.href="/goWarnAdd";
+		// 警示消息查询
+		function warnSearch(){
+			window.location.href="/admin/warnSearch";
 		}
 
 		//进入修改action

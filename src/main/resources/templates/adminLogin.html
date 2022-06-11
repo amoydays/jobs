@@ -17,18 +17,21 @@
 </head>
 <body>
 <div class="searchw">
-    <div class="searchTitle">现代码头通知消息登记</div>
+    <div class="searchTitle">现代码头预登记系统登录</div>
     <div class="searchcont">
         <div class="notice"><p th:text="${result }"></p></div>
         <form method="post" id="form1">
             <div class="inputs">
                 <li>
-                    <span>通知消息：</span>
-                    <input type="text" placeholder="必填项" name="content" id="content" th:value="${jobNotice.content}"/>
+                    <span>用户名：</span>
+                    <input type="text" placeholder="必填项" name="name" id="name"/>
+                </li>
+                <li>
+                    <span>密码：</span>
+                    <input type="password" placeholder="必填项" name="passwd" id="passwd"/>
                 </li>
                 <div class="btn">
-                    <input type="button" value="消息登记" id="order"/>
-                    <input type="button" value="预登记查询" onclick="goOrderAll()"/>
+                    <input type="button" value="登录" id="order"/>
                 </div>
             </div>
         </form>
@@ -37,15 +40,19 @@
 </div>
 
 <script>
-		function goOrderAll(){
-			window.location.href="/goOrderAll";
+		function warnSearch(){
+			window.location.href="/admin/warnSearch";
 		}
 
 		function cha(form) {
-		    // 通知消息不能为空
-			if (form.content.value.match(/^\s*$/)) {
-				form.content.focus();
-				alert("通知消息 不能为空!");
+			if (form.name.value.match(/^\s*$/)) {
+				form.name.focus();
+				alert("用户名 不能为空!");
+				return false;
+			}
+			if (form.passwd.value.match(/^\s*$/)) {
+				form.passwd.focus();
+				alert("密码 不能为空!");
 				return false;
 			}
 
@@ -53,10 +60,11 @@
 		}
 		$('#order').on('click', function() {
 			if (true == cha(document.getElementById("form1"))) {
-				document.getElementById("form1").action = "/noticeAdd";
+				document.getElementById("form1").action = "/login";
 				document.getElementById("form1").submit();
 			}
 		})
+
 
 
 

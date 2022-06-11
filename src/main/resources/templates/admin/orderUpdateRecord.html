@@ -116,14 +116,14 @@
 		}
 		$('#orderSearch').on('click', function() {
 			if (true == cha(document.getElementById("form1"))) {
-				document.getElementById("form1").action = "/updateRecordSearch";
+				document.getElementById("form1").action = "/admin/updateRecordSearch";
 				document.getElementById("form1").submit();
 			}
 		})
 
 		//进入预登记查询功能
 		function goOrderAll(){
-			window.location.href="/goOrderAll";
+			window.location.href="/admin/goOrderAll";
 		}
 
 </script>
