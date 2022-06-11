@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>现代码头作业预登记平台</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="no"/>
+    <meta name="full-screen" content="no"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta content="false" id="twcClient" name="twcClient"/>
+    <link rel="stylesheet" href="/css/style.css"/>
+    <script src="/js/setfont.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/qrcode.js"></script>
+    <script src="/js/datePicker.js"></script>
+</head>
+<body>
+<div class="searchw">
+    <div class="searchTitle">现代码头作业预登记修改记录查询</div>
+    <div class="searchcont">
+        <form method="post" id="form1">
+            <div class="inputs input_orderinfo">
+                <li>
+                    <span>开始时间：</span>
+                    <div class="rbox2">
+                        <input type="text" name="startDate" id="jobOrderDateStart" th:value="${orderSearch.startDate }"/>
+                    </div>
+                </li>
+                <li>
+                    <span>结束时间：</span>
+                    <div class="rbox2">
+                        <input type="text" name="endDate" id="jobOrderDateEnd" th:value="${orderSearch.endDate }"/>
+                    </div>
+                </li>
+                <li>
+                    <span>手机：</span>
+                    <div class="rbox2">
+                        <input type="text" name="telephone" th:value="${orderSearch.telephone}" id="telephone"/>
+                    </div>
+                </li>
+                <li>
+                    <span>作业单位：</span>
+                    <div class="rbox2">
+                        <input type="text" name="driver" th:value="${orderSearch.driver}" id="driver"/>
+                    </div>
+                </li>
+                <li>
+                    <input type="button" value="修改记录查询" id="orderSearch"/>
+                    <input type="button" value="预登记查询" onclick="goOrderAll()" class="gotoaddPage"/>
+                </li>
+            </div>
+        </form>
+        <table width="100%" class="orderinfo" cellpadding="0" cellspacing="0">
+            <tr>
+                <th>日期</th>
+                <th>修改单位</th>
+                <th>修改手机</th>
+                <th>修改项</th>
+                <th>原值</th>
+                <th>新值</th>
+            </tr>
+            <tr th:each="record:${jobUpdateRecordList}" class="orderTr">
+                <td align="center" th:text="${#dates.format(record.time, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td align="center" th:text="${record.driver}"></td>
+                <td align="center" th:text="${record.telephone}"></td>
+                <td align="center" th:text="${record.columnName}"></td>
+                <td align="center" th:text="${record.oriValue}"></td>
+                <td align="center" th:text="${record.nowValue}"></td>
+            </tr>
+        </table>
+    </div>
+    <br/>
+</div>
+
+<script>
+		//日期控件
+		var calendar = new datePicker();
+        calendar.init({
+            'trigger': '#jobOrderDateStart', /*按钮选择器，用于触发弹出插件*/
+            'type': 'date',/*模式：date日期；datetime日期时间；time时间；ym年月；*/
+            'minDate':'1900-1-1',/*最小日期*/
+            'maxDate':'2100-12-31',/*最大日期*/
+            'onSubmit':function(){/*确认时触发事件*/
+                $('#jobOrderDateStart').attr('value',calendar.value);
+            },
+            'onClose':function(){/*取消时触发事件*/
+            }
+        });
+		var calendar2 = new datePicker();
+        calendar2.init({
+            'trigger': '#jobOrderDateEnd', /*按钮选择器，用于触发弹出插件*/
+            'type': 'date',/*模式：date日期；datetime日期时间；time时间；ym年月；*/
+            'minDate':'1900-1-1',/*最小日期*/
+            'maxDate':'2100-12-31',/*最大日期*/
+            'onSubmit':function(){/*确认时触发事件*/
+                $('#jobOrderDateEnd').attr('value',calendar2.value);
+            },
+            'onClose':function(){/*取消时触发事件*/
+            }
+        });
+
+        //查询条件判断
+		function cha(form) {
+			//jobOrderDateStart不为空时，jobOrderDateEnd也不为空
+			if (!form.jobOrderDateStart.value.match(/^\s*$/)) {
+				if (form.jobOrderDateEnd.value.match(/^\s*$/)) {
+					form.jobOrderDateEnd.focus();
+					alert("结束时间 不能为空!");
+					return false;
+				}
+			}
+
+			return true;
+		}
+		$('#orderSearch').on('click', function() {
+			if (true == cha(document.getElementById("form1"))) {
+				document.getElementById("form1").action = "/updateRecordSearch";
+				document.getElementById("form1").submit();
+			}
+		})
+
+		//进入预登记查询功能
+		function goOrderAll(){
+			window.location.href="/goOrderAll";
+		}
+
+</script>
+</body>
+</html>

@@ -19,7 +19,12 @@
 <div class="searchw">
     <div class="searchTitle">现代码头作业预登记</div>
     <div class="searchcont">
-        <div class="ht" style="font-size: 16px; text-align: center; color: red;">备注：14点前可预登记当天夜班之后的4个班次，<br />14点后则预登记隔天夜班之后的4个班次。</div>
+        <div class="notice">
+            <p th:text="|通知：${jobNotice.content}|" th:if="${noticeIsShow == '1'}" />
+            <input type="radio" th:text="下次不再显示" th:if="${noticeIsShow == '1'}" onclick="noticeNoShow()" />
+            <p th:text="|警示：${jobWarn.content}|" th:if="${jobWarn.content}" />
+            <input type="radio" th:text="下次不再显示" th:if="${jobWarn.content}" th:onclick="warnNoShow([[${jobWarn.id }]])" />
+        </div>
         <form method="post" id="form1">
             <input type="hidden" name="isAdd" value="true"/>
             <div class="inputs">
@@ -43,7 +48,7 @@
                 </li>
                 <li>
                     <span>船名航次：</span>
-                    <input type="text" placeholder="不可为空" name="vesselVoyage" id="vesselVoyage" th:value="${jobOrder.vesselVoyage}"/>
+                    <input type="text" placeholder="必填项，集港时可不填" name="vesselVoyage" id="vesselVoyage" th:value="${jobOrder.vesselVoyage}"/>
                 </li>
                 <!--                <li>-->
                 <!--                    <span>作业区域：</span>-->
@@ -57,23 +62,21 @@
                 <li>
                     <span>作业时间：</span>
                     <div class="rbox">
-                        <label><input type="radio" name="time" th:value="${today }+'夜班'" checked="true"
-                                      th:text="|${today}夜班|"></input></label>
-                        <label><input type="radio" name="time" th:value="${tomorrow }+'白班'"
-                                      th:text="|${tomorrow}白班|"></input></label>
-                        <label><input type="radio" name="time" th:value="${tomorrow }+'夜班'"
-                                      th:text="|${tomorrow}夜班|"></input></label>
-                        <label><input type="radio" name="time" th:value="${tomorrowNext }+'白班'"
-                                      th:text="|${tomorrowNext}白班|"></input></label>
+                        <label><input type="radio" name="time" th:value="${today }+'夜班'" checked="true" th:text="|${today}夜班(18:30-07:00)|"></input></label>
+                        <label><input type="radio" name="time" th:value="${tomorrow }+'白班'" th:text="|${tomorrow}白班(07:30-18:00)|"></input></label>
+<!--                        <label><input type="radio" name="time" th:value="${tomorrow }+'夜班'"-->
+<!--                                      th:text="|${tomorrow}夜班|"></input></label>-->
+<!--                        <label><input type="radio" name="time" th:value="${tomorrowNext }+'白班'"-->
+<!--                                      th:text="|${tomorrowNext}白班|"></input></label>-->
                     </div>
                 </li>
                 <li>
                     <span>作业单位：</span>
-                    <input type="text" placeholder="不可为空" name="driver" id="driver" th:value="${jobOrder.driver}"/>
+                    <input type="text" placeholder="必填项" name="driver" id="driver" th:value="${jobOrder.driver}"/>
                 </li>
                 <li>
                     <span>手机号码：</span>
-                    <input type="text" placeholder="不可为空" name="telephone" id="telephone"
+                    <input type="text" placeholder="必填项" name="telephone" id="telephone"
                            th:value="${jobOrder.telephone}"/>
                 </li>
                 <li>
@@ -87,7 +90,7 @@
                 <div class="btn">
                     <input type="button" value="预登记" id="order"/>
                     <input type="reset" value="重置" id="orderReset"/>
-                    <input type="button" value="预登记查询" onclick="gotoInfoPage()"/>
+                    <input type="button" value="查询和修改" onclick="gotoInfoPage()"/>
                 </div>
             </div>
         </form>
@@ -96,6 +99,35 @@
 </div>
 
 <script>
+		function warnNoShow(id){
+		    console.log(id);
+			var params="id="+id+"&randon="+ new Date().getTime();
+			$.ajax({
+			    type: "get",
+				url: "/warnNoShow",
+				data:params,
+				success: function(responseData, textStatus){
+					alert('设置成功！');
+				},
+				error: function(){
+					alert("网络传输出错,请再试一次！");
+				}
+			});
+		}
+		function noticeNoShow(){
+			var params="randon="+ new Date().getTime();
+			$.ajax({
+			    type: "get",
+				url: "/noticeNoShow",
+				data:params,
+				success: function(responseData, textStatus){
+					alert('设置成功！');
+				},
+				error: function(){
+					alert("网络传输出错,请再试一次！");
+				}
+			});
+		}
 		function gotoInfoPage(){
 			window.location.href="/goOrderInfo";
 		}
@@ -111,9 +143,13 @@
 
 		function cha(form) {
 			if (form.vesselVoyage.value.match(/^\s*$/)) {
-				form.vesselVoyage.focus();
-				alert("船名航次 不能为空!");
-				return false;
+			    var val=$('input:radio[name="typeId"]:checked')[0].nextSibling.nodeValue;
+			    //var val=$('input:radio[name="typeId"]:checked').val();
+                if($.trim(val) != "集港"){
+                    form.vesselVoyage.focus();
+                    alert("船名航次 不能为空!");
+                    return false;
+                }
 			}
 			if (form.driver.value.match(/^\s*$/)) {
 				form.driver.focus();
@@ -164,9 +200,6 @@
 				document.getElementById("form1").submit();
 			}
 		})
-
-
-
 </script>
 </body>
 </html>

@@ -17,20 +17,18 @@
 </head>
 <body>
 <div class="searchw">
-    <div class="searchTitle">现代码头作业预登记</div>
+    <div class="searchTitle">现代码头作业预登记更新</div>
     <div class="searchcont">
-        <div class="ht" style="font-size: 16px; text-align: center; color: red;"><p th:text="${result }"></p></div>
+        <div class="notice"><p th:text="${result }"></p></div>
         <form method="post" id="form1">
-            <input type="hidden" name="id" th:value="${jobOrder.id}"/>
+            <input type="hidden" name="id" th:value="${jobOrderUpdate.id}"/>
             <input type="hidden" name="isAdd" value="false"/>
             <div class="inputs">
                 <li>
                     <span>作业类型：</span>
                     <div class="rbox">
                         <label th:each="jobType,status:${jobTypeList}">
-                            <input type="radio" name="typeId" th:value="${jobType.id }"
-                                   th:checked="${status.count==1 or jobOrder.typeId == jobType.id}"
-                                   th:text="${jobType.name }"></input>
+                            <input type="radio" name="typeId" th:value="${jobType.id }" th:checked="${status.count==1 or jobOrderUpdate.typeId == jobType.id}" th:text="${jobType.name }"></input>
                         </label>
                     </div>
                 </li>
@@ -38,16 +36,13 @@
                     <span>作业货名：</span>
                     <div class="rbox">
                         <label th:each="jobGoods,status:${jobGoodsList}">
-                            <input type="radio" name="goodsId" th:value="${jobGoods.id }"
-                                   th:checked="${status.count==1 or jobOrder.goodsId == jobGoods.id}"
-                                   th:text="${jobGoods.name }"></input>
+                            <input type="radio" name="goodsId" th:value="${jobGoods.id }" th:checked="${status.count==1 or jobOrderUpdate.goodsId == jobGoods.id}" th:text="${jobGoods.name }"></input>
                         </label>
                     </div>
                 </li>
                 <li>
                     <span>船名航次：</span>
-                    <input type="text" placeholder="不可为空" name="vesselVoyage" id="vesselVoyage"
-                           th:value="${jobOrder.vesselVoyage}"/>
+                    <input type="text" placeholder="必填项" name="vesselVoyage" id="vesselVoyage" th:value="${jobOrderUpdate.vesselVoyage}"/>
                 </li>
                 <!--                <li>-->
                 <!--                    <span>作业区域：</span>-->
@@ -62,41 +57,33 @@
                 <li>
                     <span>作业时间：</span>
                     <div class="rbox">
-                        <label><input type="radio" name="time" th:value="${today }+'夜班'" checked="true"
-                                      th:text="|${today}夜班|"></input></label>
-                        <label><input type="radio" name="time" th:value="${tomorrow }+'白班'"
-                                      th:checked="|${tomorrow}白班| == ${jobOrder.time}"
-                                      th:text="|${tomorrow}白班|"></input></label>
-                        <label><input type="radio" name="time" th:value="${tomorrow }+'夜班'"
-                                      th:checked="|${tomorrow}夜班| == ${jobOrder.time}"
-                                      th:text="|${tomorrow}夜班|"></input></label>
-                        <label><input type="radio" name="time" th:value="${tomorrowNext }+'白班'"
-                                      th:checked="|${tomorrowNext}白班| == ${jobOrder.time}"
-                                      th:text="|${tomorrowNext}白班|"></input></label>
+                        <label><input type="radio" name="time" th:value="${jobOrderUpdate.time}" checked="true" th:text="${jobOrderUpdate.time}"></input></label>
+                        <label><input type="radio" name="time" th:if="|${today}夜班| != ${jobOrderUpdate.time}" th:value="|${today}夜班|" th:text="|${today}夜班|"></input></label>
+                        <label><input type="radio" name="time" th:if="|${tomorrow}白班| != ${jobOrderUpdate.time}" th:value="|${tomorrow}白班|" th:text="|${tomorrow}白班|"></input></label>
+<!--                        <label><input type="radio" name="time" th:value="${tomorrow }+'夜班'" th:checked="|${tomorrow}夜班| == ${jobOrderUpdate.time}" th:text="|${tomorrow}夜班|"></input></label>-->
+<!--                        <label><input type="radio" name="time" th:value="${tomorrowNext }+'白班'" th:checked="|${tomorrowNext}白班| == ${jobOrderUpdate.time}" th:text="|${tomorrowNext}白班|"></input></label>-->
                     </div>
                 </li>
                 <li>
                     <span>作业单位：</span>
-                    <input type="text" placeholder="不可为空" name="driver" id="driver" th:value="${jobOrder.driver}"/>
+                    <input type="text" placeholder="必填项" name="driver" id="driver" th:value="${jobOrderUpdate.driver}"/>
                 </li>
                 <li>
                     <span>手机号码：</span>
-                    <input type="text" placeholder="不可为空" name="telephone" id="telephone"
-                           th:value="${jobOrder.telephone}"/>
+                    <input type="text" placeholder="必填项" name="telephone" id="telephone" th:value="${jobOrderUpdate.telephone}"/>
                 </li>
                 <li>
                     <span>作业件数：</span>
-                    <input type="text" placeholder="件数、重量二选一" name="goodsNum" id="goodsNum"
-                           th:value="${jobOrder.goodsNum}"/>
+                    <input type="text" placeholder="件数、重量二选一" name="goodsNum" id="goodsNum" th:value="${jobOrderUpdate.goodsNum}"/>
                 </li>
                 <li>
                     <span>作业重量：</span>
-                    <input type="text" placeholder="件数、重量二选一" name="weight" id="weight" th:value="${jobOrder.weight}"/>
+                    <input type="text" placeholder="件数、重量二选一" name="weight" id="weight" th:value="${jobOrderUpdate.weight}"/>
                 </li>
                 <div class="btn">
                     <input type="button" value="更新" id="order"/>
-                    <input type="reset" value="重新登记" id="orderReset"/>
-                    <input type="button" value="预登记查询" onclick="gotoInfoPage()"/>
+                    <input type="reset" value="新登记" id="orderReset"/>
+                    <input type="button" value="查询和修改" onclick="gotoInfoPage()"/>
                 </div>
             </div>
         </form>
@@ -115,9 +102,13 @@
 
 		function cha(form) {
 		    if (form.vesselVoyage.value.match(/^\s*$/)) {
-				form.vesselVoyage.focus();
-				alert("船名航次 不能为空!");
-				return false;
+				var val=$('input:radio[name="typeId"]:checked')[0].nextSibling.nodeValue;
+			    //var val=$('input:radio[name="typeId"]:checked').val();
+                if($.trim(val) != "集港"){
+                    form.vesselVoyage.focus();
+                    alert("船名航次 不能为空!");
+                    return false;
+                }
 			}
 			if (form.driver.value.match(/^\s*$/)) {
 				form.driver.focus();

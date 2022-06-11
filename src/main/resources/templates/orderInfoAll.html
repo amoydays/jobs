@@ -18,7 +18,7 @@
 </head>
 <body>
 <div class="searchw">
-    <div class="searchTitle">现代码头作业预登记客户查询</div>
+    <div class="searchTitle">现代码头作业预登记内部查询</div>
     <div class="searchcont">
         <form method="post" id="form1">
             <div class="inputs input_orderinfo">
@@ -82,6 +82,9 @@
                 <li>
                     <input type="button" value="预登记查询" id="orderSearch"/>
                     <input type="button" value="重置" onclick="goOrderAll()" class="gotoaddPage"/>
+                    <input type="button" value="客户更改查询" onclick="goUpdateRecord()" class="gotoaddPage"/>
+                    <input type="button" value="通知消息" onclick="goNoticeAdd()" class="gotoaddPage"/>
+                    <input type="button" value="警示消息" onclick="goWarnAdd()" class="gotoaddPage"/>
                 </li>
             </div>
         </form>
@@ -129,9 +132,29 @@
 </div>
 
 <script>
+        // 定时2分钟读取一次更新文本
+        setInterval(function(){
+            var params="randon="+ new Date().getTime();
+			$.ajax({
+			    type: "get",
+				url: "/getUpdateString",
+				data:params,
+				success: function(responseData, textStatus){
+				    if(responseData){
+				        console.log(responseData);
+					    alert(responseData.content);
+				    }
+				},
+				error: function(){
+					console.log("获取UpdateString失败!");
+				}
+			});
+        },2*60*1000);
+
         function showTelephone(telephone){
             alert('手机号码：'+telephone);
         }
+
         // 合计功能
 		$(document).ready(function() {
 			var goodsNumSum=0;
@@ -206,6 +229,18 @@
 		//重置
 		function goOrderAll(){
 			window.location.href="/goOrderAll";
+		}
+		// 客户更改记录查询
+		function goUpdateRecord(){
+			window.location.href="/goUpdateRecord";
+		}
+		// 通知消息登记
+		function goNoticeAdd(){
+			window.location.href="/goNoticeAdd";
+		}
+		// 警示消息登记
+		function goWarnAdd(){
+			window.location.href="/goWarnAdd";
 		}
 
 		//进入修改action

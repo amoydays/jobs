@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>现代码头作业预登记平台</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="no"/>
+    <meta name="full-screen" content="no"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta content="false" id="twcClient" name="twcClient"/>
+    <link rel="stylesheet" href="/css/style.css"/>
+    <script src="/js/setfont.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/qrcode.js"></script>
+    <script src="/js/datePicker.js"></script>
+</head>
+<body>
+<div class="searchw">
+    <div class="searchTitle">现代码头作业警示信息查询</div>
+    <div class="searchcont">
+        <form method="post" id="form1">
+            <div class="inputs input_orderinfo">
+                <li>
+                    <span>开始时间：</span>
+                    <div class="rbox2">
+                        <input type="text" name="startDate" id="jobOrderDateStart" th:value="${orderSearch.startDate }"/>
+                    </div>
+                </li>
+                <li>
+                    <span>结束时间：</span>
+                    <div class="rbox2">
+                        <input type="text" name="endDate" id="jobOrderDateEnd" th:value="${orderSearch.endDate }"/>
+                    </div>
+                </li>
+                <li>
+                    <span>目标手机：</span>
+                    <div class="rbox2">
+                        <input type="text" name="telephone" th:value="${orderSearch.telephone}" id="telephone"/>
+                    </div>
+                </li>
+                <li>
+                    <span>目标单位：</span>
+                    <div class="rbox2">
+                        <input type="text" name="driver" th:value="${orderSearch.driver}" id="driver"/>
+                    </div>
+                </li>
+                <li>
+                    <span>是否已读：</span>
+                    <div class="rbox2">
+                        <input type="radio" name="isRead" th:value="0" th:text="未读"></input>
+                        <input type="radio" name="isRead" th:value="1" th:text="已读"></input>
+                    </div>
+                </li>
+                <li>
+                    <input type="button" value="警示查询" id="orderSearch"/>
+                    <input type="button" value="新增警示" onclick="goWarnAdd()" class="gotoaddPage"/>
+                    <input type="button" value="预登记查询" onclick="goOrderAll()" class="gotoaddPage"/>
+                </li>
+            </div>
+        </form>
+        <table width="100%" class="orderinfo" cellpadding="0" cellspacing="0">
+            <tr>
+                <th>日期</th>
+                <th>目标单位</th>
+                <th>目标手机</th>
+                <th>警示信息</th>
+                <th>是否已读</th>
+                <th>操作</th>
+            </tr>
+            <tr th:each="warn:${jobWarnList}" class="orderTr">
+                <td align="center" th:text="${#dates.format(warn.time, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td align="center" th:text="${warn.driver}"></td>
+                <td align="center" th:text="${warn.telephone}"></td>
+                <td align="center" th:text="${warn.content}"></td>
+                <td align="center" th:text="未读" th:if="${!warn.isRead}"></td>
+                <td align="center" th:text="已读" th:if="${warn.isRead}"></td>
+                <td align="center">
+                    <input type="button" value="修改" th:onclick="goWarnUpdate([[${warn.id }]])" />
+                    <input type="button" value="删除" class="deletes" />
+                    <span style="display:none" th:text="${warn.id}"></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br/>
+</div>
+
+<script>
+		//日期控件
+		var calendar = new datePicker();
+        calendar.init({
+            'trigger': '#jobOrderDateStart', /*按钮选择器，用于触发弹出插件*/
+            'type': 'date',/*模式：date日期；datetime日期时间；time时间；ym年月；*/
+            'minDate':'1900-1-1',/*最小日期*/
+            'maxDate':'2100-12-31',/*最大日期*/
+            'onSubmit':function(){/*确认时触发事件*/
+                $('#jobOrderDateStart').attr('value',calendar.value);
+            },
+            'onClose':function(){/*取消时触发事件*/
+            }
+        });
+		var calendar2 = new datePicker();
+        calendar2.init({
+            'trigger': '#jobOrderDateEnd', /*按钮选择器，用于触发弹出插件*/
+            'type': 'date',/*模式：date日期；datetime日期时间；time时间；ym年月；*/
+            'minDate':'1900-1-1',/*最小日期*/
+            'maxDate':'2100-12-31',/*最大日期*/
+            'onSubmit':function(){/*确认时触发事件*/
+                $('#jobOrderDateEnd').attr('value',calendar2.value);
+            },
+            'onClose':function(){/*取消时触发事件*/
+            }
+        });
+
+        //查询条件判断
+		function cha(form) {
+			//jobOrderDateStart不为空时，jobOrderDateEnd也不为空
+			if (!form.jobOrderDateStart.value.match(/^\s*$/)) {
+				if (form.jobOrderDateEnd.value.match(/^\s*$/)) {
+					form.jobOrderDateEnd.focus();
+					alert("结束时间 不能为空!");
+					return false;
+				}
+			}
+
+			return true;
+		}
+		$('#orderSearch').on('click', function() {
+			if (true == cha(document.getElementById("form1"))) {
+				document.getElementById("form1").action = "/warnSearch";
+				document.getElementById("form1").submit();
+			}
+		})
+
+		//进入新增警示
+		function goWarnAdd(){
+			window.location.href="/goWarnAdd";
+		}
+		//进入预登记查询功能
+		function goOrderAll(){
+			window.location.href="/goOrderAll";
+		}
+		//进入修改页面
+		function goWarnUpdate(ID){
+			window.location.href="/goWarnUpdate?id="+ID;
+		}
+		//删除功能
+		$(document).ready(function(){
+			$(".deletes").click(function(){
+				 if(confirm('您确定删除吗?此操作将不能恢复')){
+				  	$(this).parents("tr").animate({ opacity: 'hide' }, "slow");
+				    var a = $(this).next("span").html();
+				    deleteMethod(a);
+				 	return true;
+				 }else{
+				    return false;
+				 }
+			});
+		});
+		function deleteMethod(id){
+			var params="id="+id+"&randon="+ new Date().getTime();
+			$.ajax({
+			    type: "get",
+				url: "/warnDel",
+				data:params,
+				success: function(responseData, textStatus){
+					alert('删除成功');
+				},
+				error: function(){
+					alert("网络传输出错,请再试一次!");
+				}
+			});
+		}
+
+</script>
+</body>
+</html>

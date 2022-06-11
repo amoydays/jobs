@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>现代码头作业预登记平台</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="no"/>
+    <meta name="full-screen" content="no"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta content="false" id="twcClient" name="twcClient"/>
+    <link rel="stylesheet" href="/css/style.css"/>
+    <script src="/js/setfont.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/qrcode.js"></script>
+</head>
+<body>
+<div class="searchw">
+    <div class="searchTitle">现代码头通知消息登记</div>
+    <div class="searchcont">
+        <div class="notice"><p th:text="${result }"></p></div>
+        <form method="post" id="form1">
+            <div class="inputs">
+                <li>
+                    <span>通知消息：</span>
+                    <input type="text" placeholder="必填项" name="content" id="content" th:value="${jobNotice.content}"/>
+                </li>
+                <div class="btn">
+                    <input type="button" value="消息登记" id="order"/>
+                    <input type="button" value="预登记查询" onclick="goOrderAll()"/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <br/>
+</div>
+
+<script>
+		function goOrderAll(){
+			window.location.href="/goOrderAll";
+		}
+
+		function cha(form) {
+		    // 通知消息不能为空
+			if (form.content.value.match(/^\s*$/)) {
+				form.content.focus();
+				alert("通知消息 不能为空!");
+				return false;
+			}
+
+			return true;
+		}
+		$('#order').on('click', function() {
+			if (true == cha(document.getElementById("form1"))) {
+				document.getElementById("form1").action = "/noticeAdd";
+				document.getElementById("form1").submit();
+			}
+		})
+
+
+
+</script>
+</body>
+</html>

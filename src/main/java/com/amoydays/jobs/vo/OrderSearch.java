@@ -6,10 +6,13 @@ public class OrderSearch {
     private String endDate;
     private String endDuty;
     private String telephone;
+    private String driver;
 
     private String areaId;
     private String goodsId;
     private String typeId;
+
+    private String isRead;
 
     public String getStartDate() {
         return startDate;
@@ -73,5 +76,21 @@ public class OrderSearch {
 
     public void setTypeId(String typeId) {
         this.typeId = typeId;
+    }
+
+    public String getDriver() {
+        return driver;
+    }
+
+    public void setDriver(String driver) {
+        this.driver = driver;
+    }
+
+    public String getIsRead() {
+        return isRead;
+    }
+
+    public void setIsRead(String isRead) {
+        this.isRead = isRead;
     }
 }

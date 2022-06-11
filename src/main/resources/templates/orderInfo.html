@@ -54,7 +54,7 @@
                 <li>
                     <span>预登记手机：</span>
                     <div class="rbox2">
-                        <input type="text" placeholder="不可为空" name="telephone" th:value="${orderSearch.telephone}"
+                        <input type="text" placeholder="必填项" name="telephone" th:value="${orderSearch.telephone}"
                                id="telephone"/>
                     </div>
                 </li>
@@ -73,7 +73,7 @@
                 <th>船名航次</th>
                 <th>件数</th>
                 <th>重量</th>
-<!--                <th>手机</th>-->
+                <th>操作</th>
             </tr>
             <tr th:each="order:${ordersList}" class="orderTr">
                 <td align="center" th:text="${order.time}"></td>
@@ -85,12 +85,11 @@
                 <td align="center" th:text="${order.vesselVoyage}"></td>
                 <td align="center" th:text="${order.goodsNum}?${order.goodsNum}:0" class="goodsNumTd"></td>
                 <td align="center" th:text="${order.weight}?${order.weight}:0" class="weightTd"></td>
-<!--                <td align="center" onmouseover="showTelephone">查看</td>-->
-                <!-- td align="center">
-                    <input type="button" value="修改" onclick="gotoUpdatePage('${order.id }')" />
-                    <input type="button" value="刪除" class="deletes"/>
-                    <span style="display: none;">${order.id }</span>
-                </td -->
+                <td align="center">
+                    <input type="button" value="修改" th:onclick="goUpdate([[${order.id }]])" />
+<!--                    <input type="button" value="刪除" class="deletes"/>-->
+<!--                    <span style="display: none;">${order.id }</span>-->
+                </td>
             </tr>
             <tr>
                 <td align="center">合计</td>
@@ -100,7 +99,7 @@
                 <td></td>
                 <td align="center" id="goodsNumSum"></td>
                 <td align="center" id="weightSum"></td>
-<!--                <td></td>-->
+                <td></td>
             </tr>
         </table>
     </div>
@@ -196,9 +195,9 @@
 			window.location.href="/goOrderAdd";
 		}
 
-		//进入修改action
-		function gotoUpdatePage(ID){
-			window.location.href="<%=path%>/goUpdate.action?jobOrder.id="+ID;
+		//进入修改页面
+		function goUpdate(ID){
+			window.location.href="/goUpdate?id="+ID;
 		}
 
 		//删除功能
