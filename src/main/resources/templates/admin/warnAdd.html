@@ -18,7 +18,7 @@
 <body>
 <div class="searchw">
     <div class="searchTitle">现代码头通知警示登记</div>
-    <div class="searchcont">
+    <div class="searchcont warnAdd">
         <div class="notice"><p th:text="${result }"></p></div>
         <form method="post" id="form1">
             <div class="inputs">
@@ -32,7 +32,7 @@
                 </li>
                 <li>
                     <span>警示消息：</span>
-                    <input type="text" placeholder="必填项" name="content" id="content"/>
+                    <textarea placeholder="必填项" name="content" id="content" cols="30" rows="10"></textarea>
                 </li>
                 <div class="btn">
                     <input type="button" value="警示登记" id="order"/>

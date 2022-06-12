@@ -31,8 +31,8 @@
       <if test="telephone != null">
         telephone like CONCAT('%',#{telephone},'%') and
       </if>
+      is_read = 0
     </trim>
-    is_read = 0
     order by time desc
     limit 0,1
   </select>

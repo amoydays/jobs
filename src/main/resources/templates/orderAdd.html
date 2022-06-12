@@ -20,10 +20,18 @@
     <div class="searchTitle">现代码头作业预登记</div>
     <div class="searchcont">
         <div class="notice">
-            <p th:text="|通知：${jobNotice.content}|" th:if="${noticeIsShow == '1'}" />
-            <input type="radio" th:text="下次不再显示" th:if="${noticeIsShow == '1'}" onclick="noticeNoShow()" />
-            <p th:text="|警示：${jobWarn.content}|" th:if="${jobWarn.content}" />
-            <input type="radio" th:text="下次不再显示" th:if="${jobWarn.content}" th:onclick="warnNoShow([[${jobWarn.id }]])" />
+            <div class="rbox" th:if="${noticeIsShow == '1'}">
+                <p th:text="|通知：${jobNotice.content}|" />
+                <label>
+                    <input type="radio" th:text="下次不再显示" onclick="noticeNoShow()" />
+                </label>
+            </div>
+            <div class="rbox" th:if="${jobWarn.content}">
+                <p th:text="|警示：${jobWarn.content}|" />
+                <label>
+                    <input type="radio" th:text="下次不再显示" th:onclick="warnNoShow([[${jobWarn.id }]])" />
+                </label>
+            </div>
         </div>
         <form method="post" id="form1">
             <input type="hidden" name="isAdd" value="true"/>

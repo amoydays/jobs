@@ -49,4 +49,7 @@ input[type="radio"]{margin:0 .05rem;line-height:.5rem;vertical-align:middle;disp
 .orderinfo tr:nth-child(2n-1){background: #f2f3f5;}
 .orderinfo input[type="button"]{outline:none; font-size:.24rem;height:.4rem;padding:0 .1rem;border: none;background:none;color: #fff;background: #2f8efc;display:inline-block;border-radius: 2px;box-shadow: 1px 1px 1px #111;}
 .gotoaddPage{margin: .2rem .1rem;padding:0 .1rem;display:inline-block;height:.5rem;line-height:.5rem;background: #2f8efc;box-shadow: 1px 1px 1px #111;color:#fff;border-radius:.05rem;}
-.notice{color:red;line-height:.4rem;text-align:center;padding:.2rem;}
+.notice{color:red;line-height:.4rem;padding:.2rem 2.2rem}
+
+.noticeAdd textarea{display:inline-block;vertical-align:top;width:70%}
+.warnAdd textarea{display:inline-block;vertical-align:top;width:70%}

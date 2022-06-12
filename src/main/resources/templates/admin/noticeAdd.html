@@ -16,7 +16,7 @@
     <script src="/js/qrcode.js"></script>
 </head>
 <body>
-<div class="searchw">
+<div class="searchw noticeAdd">
     <div class="searchTitle">现代码头通知消息登记</div>
     <div class="searchcont">
         <div class="notice"><p th:text="${result }"></p></div>
@@ -24,7 +24,7 @@
             <div class="inputs">
                 <li>
                     <span>通知消息：</span>
-                    <input type="text" placeholder="必填项" name="content" id="content" th:value="${jobNotice.content}"/>
+                    <textarea placeholder="必填项" name="content" id="content" th:text="${jobNotice.content}" cols="30" rows="10"></textarea>
                 </li>
                 <div class="btn">
                     <input type="button" value="消息登记" id="order"/>

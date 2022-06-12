@@ -249,11 +249,17 @@ public class OrderController {
 
         // 警示消息
         OrderSearch orderSearch = new OrderSearch();
+        // 先按driver作业单位查询
         orderSearch.setDriver(jobOrder.getDriver());
-        orderSearch.setTelephone(jobOrder.getTelephone());
         JobWarn jobWarn = jobWarnMapper.selectOneNoReadByDriverTel(orderSearch);
         if (jobWarn == null) {
-            jobWarn = new JobWarn();
+            // 作业单位匹配不到警示消息，再按telephone手机号码查询
+            orderSearch.setDriver(null);
+            orderSearch.setTelephone(jobOrder.getTelephone());
+            jobWarn = jobWarnMapper.selectOneNoReadByDriverTel(orderSearch);
+            if (jobWarn == null) {
+                jobWarn = new JobWarn();
+            }
         }
         request.setAttribute("jobWarn", jobWarn);
 
