@@ -13,6 +13,9 @@
       <arg column="type_id" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="area_id" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="goods_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="goods_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="area_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="type_name" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="weight" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <arg column="date" javaType="java.util.Date" jdbcType="DATE" />
       <arg column="duty" javaType="java.lang.String" jdbcType="VARCHAR" />
@@ -21,7 +24,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     ID, driver, car_num, telephone, goods_info, goods_num, time, type_id, area_id, goods_id, 
-    weight, date, duty, vessel_voyage
+    goods_name, area_name, type_name, weight, date, duty, vessel_voyage
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -66,12 +69,14 @@
     insert into job_order (ID, driver, car_num, 
       telephone, goods_info, goods_num, 
       time, type_id, area_id, 
-      goods_id, weight, date, 
+      goods_id, goods_name, area_name, 
+      type_name, weight, date, 
       duty, vessel_voyage)
     values (#{id,jdbcType=VARCHAR}, #{driver,jdbcType=VARCHAR}, #{carNum,jdbcType=VARCHAR}, 
       #{telephone,jdbcType=VARCHAR}, #{goodsInfo,jdbcType=VARCHAR}, #{goodsNum,jdbcType=INTEGER}, 
       #{time,jdbcType=VARCHAR}, #{typeId,jdbcType=VARCHAR}, #{areaId,jdbcType=VARCHAR}, 
-      #{goodsId,jdbcType=VARCHAR}, #{weight,jdbcType=INTEGER}, #{date,jdbcType=DATE}, 
+      #{goodsId,jdbcType=VARCHAR}, #{goodsName,jdbcType=VARCHAR}, #{areaName,jdbcType=VARCHAR}, 
+      #{typeName,jdbcType=VARCHAR}, #{weight,jdbcType=INTEGER}, #{date,jdbcType=DATE}, 
       #{duty,jdbcType=VARCHAR}, #{vesselVoyage,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.amoydays.jobs.entity.JobOrder">
@@ -106,6 +111,15 @@
       </if>
       <if test="goodsId != null">
         goods_id,
+      </if>
+      <if test="goodsName != null">
+        goods_name,
+      </if>
+      <if test="areaName != null">
+        area_name,
+      </if>
+      <if test="typeName != null">
+        type_name,
       </if>
       <if test="weight != null">
         weight,
@@ -151,6 +165,15 @@
       <if test="goodsId != null">
         #{goodsId,jdbcType=VARCHAR},
       </if>
+      <if test="goodsName != null">
+        #{goodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="areaName != null">
+        #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="typeName != null">
+        #{typeName,jdbcType=VARCHAR},
+      </if>
       <if test="weight != null">
         #{weight,jdbcType=INTEGER},
       </if>
@@ -195,6 +218,15 @@
       <if test="goodsId != null">
         goods_id = #{goodsId,jdbcType=VARCHAR},
       </if>
+      <if test="goodsName != null">
+        goods_name = #{goodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="areaName != null">
+        area_name = #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="typeName != null">
+        type_name = #{typeName,jdbcType=VARCHAR},
+      </if>
       <if test="weight != null">
         weight = #{weight,jdbcType=INTEGER},
       </if>
@@ -221,6 +253,9 @@
       type_id = #{typeId,jdbcType=VARCHAR},
       area_id = #{areaId,jdbcType=VARCHAR},
       goods_id = #{goodsId,jdbcType=VARCHAR},
+      goods_name = #{goodsName,jdbcType=VARCHAR},
+      area_name = #{areaName,jdbcType=VARCHAR},
+      type_name = #{typeName,jdbcType=VARCHAR},
       weight = #{weight,jdbcType=INTEGER},
       date = #{date,jdbcType=DATE},
       duty = #{duty,jdbcType=VARCHAR},

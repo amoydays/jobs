@@ -48,6 +48,7 @@
                             <input type="radio" name="typeId" th:value="${jobType.id }" th:checked="${status.count==1}"
                                    th:text="${jobType.name }"></input>
                         </label>
+                        <input type="hidden" name="typeName" id="typeName" />
                     </div>
                 </li>
                 <li>
@@ -57,6 +58,7 @@
                             <input type="radio" name="goodsId" th:value="${jobGoods.id }"
                                    th:checked="${status.count==1}" th:text="${jobGoods.name }"></input>
                         </label>
+                        <input type="hidden" name="goodsName" id="goodsName" />
                     </div>
                 </li>
                 <li>
@@ -120,7 +122,7 @@
 				url: "/warnNoShow",
 				data:params,
 				success: function(responseData, textStatus){
-					alert('设置成功！');
+					alert('下次不再显示！');
 				},
 				error: function(){
 					alert("网络传输出错,请再试一次！");
@@ -135,7 +137,7 @@
 				url: "/noticeNoShow",
 				data:params,
 				success: function(responseData, textStatus){
-					alert('设置成功！');
+					alert('下次不再显示！');
 				},
 				error: function(){
 					alert("网络传输出错,请再试一次！");
@@ -206,6 +208,10 @@
 					return false;
 				}
 			}
+
+            // 设置typeName和goodsName的名字
+            $('#typeName').attr('value',$('input:radio[name="typeId"]:checked')[0].nextSibling.nodeValue);
+            $('#goodsName').attr('value',$('input:radio[name="goodsId"]:checked')[0].nextSibling.nodeValue);
 
 			return true;
 		}

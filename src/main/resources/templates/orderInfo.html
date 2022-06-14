@@ -77,11 +77,11 @@
             </tr>
             <tr th:each="order:${ordersList}" class="orderTr">
                 <td align="center" th:text="${order.time}"></td>
-                <td align="center" th:each="jobType:${jobTypeList}" th:if="${order.typeId == jobType.id}"
-                    th:text="${jobType.name}"></td>
+                <td align="center" th:text="${order.typeName}"></td>
                 <td align="center" th:text="${order.driver}"></td>
-                <td align="center" th:each="jobGoods:${jobGoodsList}" th:if="${order.goodsId == jobGoods.id}"
-                    th:text="${jobGoods.name}"></td>
+                <td align="center" th:text="${order.goodsName}"></td>
+<!--                <td align="center" th:each="jobGoods:${jobGoodsList}" th:if="${order.goodsId == jobGoods.id}"-->
+<!--                    th:text="${jobGoods.name}"></td>-->
                 <td align="center" th:text="${order.vesselVoyage}"></td>
                 <td align="center" th:text="${order.goodsNum}?${order.goodsNum}:0" class="goodsNumTd"></td>
                 <td align="center" th:text="${order.weight}?${order.weight}:0" class="weightTd"></td>

@@ -30,6 +30,7 @@
                         <label th:each="jobType,status:${jobTypeList}">
                             <input type="radio" name="typeId" th:value="${jobType.id }" th:checked="${status.count==1 or jobOrderUpdate.typeId == jobType.id}" th:text="${jobType.name }"></input>
                         </label>
+                        <input type="hidden" name="typeName" id="typeName" />
                     </div>
                 </li>
                 <li>
@@ -38,6 +39,7 @@
                         <label th:each="jobGoods,status:${jobGoodsList}">
                             <input type="radio" name="goodsId" th:value="${jobGoods.id }" th:checked="${status.count==1 or jobOrderUpdate.goodsId == jobGoods.id}" th:text="${jobGoods.name }"></input>
                         </label>
+                        <input type="hidden" name="goodsName" id="goodsName" />
                     </div>
                 </li>
                 <li>
@@ -150,6 +152,10 @@
 					return false;
 				}
 			}
+
+            // 设置typeName和goodsName的名字
+            $('#typeName').attr('value',$('input:radio[name="typeId"]:checked')[0].nextSibling.nodeValue);
+            $('#goodsName').attr('value',$('input:radio[name="goodsId"]:checked')[0].nextSibling.nodeValue);
 
 			return true;
 		}

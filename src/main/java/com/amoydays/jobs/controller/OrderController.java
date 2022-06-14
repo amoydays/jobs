@@ -30,9 +30,12 @@ public class OrderController {
         put("telephone", "手机");
         put("goodsNum", "作业件数");
         put("weight", "作业重量");
-        put("typeId", "作业类型");
-        put("goodsId", "作业货名");
-        put("areaId", "作业区域");
+        put("typeId", "作业类型ID");
+        put("typeName", "作业类型");
+        put("goodsId", "作业货名ID");
+        put("goodsName", "作业货名");
+        put("areaId", "作业区域ID");
+        put("areaName", "作业区域");
         put("vesselVoyage", "船名航次");
         put("time", "作业时间");
         put("date", "作业日期");
@@ -145,39 +148,39 @@ public class OrderController {
                     } else {
                         jobUpdateRecord.setColumnName(name);
                     }
-                    if (field.getName().equals("typeId")) {
-                        List<JobType> jobTypeList = jobTypeMapper.findAll();
-                        Map<String, String> jobTypeMap = new HashMap<String, String>();
-                        for (JobType jobType : jobTypeList) {
-                            jobTypeMap.put(jobType.getId(), jobType.getName());
-                        }
-                        jobUpdateRecord.setOriValue(jobTypeMap.get(oriVal));
-                        jobUpdateRecord.setNowValue(jobTypeMap.get(newVal));
-                    } else if (field.getName().equals("goodsId")) {
-                        List<JobGoods> jobGoodsList = jobGoodsMapper.findAll();
-                        Map<String, String> jobGoodsMap = new HashMap<String, String>();
-                        for (JobGoods jobGoods : jobGoodsList) {
-                            jobGoodsMap.put(jobGoods.getId(), jobGoods.getName());
-                        }
-                        jobUpdateRecord.setOriValue(jobGoodsMap.get(oriVal));
-                        jobUpdateRecord.setNowValue(jobGoodsMap.get(newVal));
-                    } else if (field.getName().equals("areaId")) {
-                        List<JobArea> jobAreaList = jobAreaMapper.findAll();
-                        Map<String, String> jobAreaMap = new HashMap<String, String>();
-                        for (JobArea jobArea : jobAreaList) {
-                            jobAreaMap.put(jobArea.getId(), jobArea.getName());
-                        }
-                        jobUpdateRecord.setOriValue(jobAreaMap.get(oriVal));
-                        jobUpdateRecord.setNowValue(jobAreaMap.get(newVal));
-                    } else {
-                        jobUpdateRecord.setOriValue(oriVal.toString());
-                        jobUpdateRecord.setNowValue(newVal.toString());
-                        if (oriVal == nullVal) {
-                            jobUpdateRecord.setOriValue("空值");
-                        }
-                        if (newVal == nullVal) {
-                            jobUpdateRecord.setNowValue("空值");
-                        }
+//                    if (field.getName().equals("typeId")) {
+//                        List<JobType> jobTypeList = jobTypeMapper.findAll();
+//                        Map<String, String> jobTypeMap = new HashMap<String, String>();
+//                        for (JobType jobType : jobTypeList) {
+//                            jobTypeMap.put(jobType.getId(), jobType.getName());
+//                        }
+//                        jobUpdateRecord.setOriValue(jobTypeMap.get(oriVal));
+//                        jobUpdateRecord.setNowValue(jobTypeMap.get(newVal));
+//                    } else if (field.getName().equals("goodsId")) {
+//                        List<JobGoods> jobGoodsList = jobGoodsMapper.findAll();
+//                        Map<String, String> jobGoodsMap = new HashMap<String, String>();
+//                        for (JobGoods jobGoods : jobGoodsList) {
+//                            jobGoodsMap.put(jobGoods.getId(), jobGoods.getName());
+//                        }
+//                        jobUpdateRecord.setOriValue(jobGoodsMap.get(oriVal));
+//                        jobUpdateRecord.setNowValue(jobGoodsMap.get(newVal));
+//                    } else if (field.getName().equals("areaId")) {
+//                        List<JobArea> jobAreaList = jobAreaMapper.findAll();
+//                        Map<String, String> jobAreaMap = new HashMap<String, String>();
+//                        for (JobArea jobArea : jobAreaList) {
+//                            jobAreaMap.put(jobArea.getId(), jobArea.getName());
+//                        }
+//                        jobUpdateRecord.setOriValue(jobAreaMap.get(oriVal));
+//                        jobUpdateRecord.setNowValue(jobAreaMap.get(newVal));
+//                    } else {
+//                    }
+                    jobUpdateRecord.setOriValue(oriVal.toString());
+                    jobUpdateRecord.setNowValue(newVal.toString());
+                    if (oriVal == nullVal) {
+                        jobUpdateRecord.setOriValue("空值");
+                    }
+                    if (newVal == nullVal) {
+                        jobUpdateRecord.setNowValue("空值");
                     }
                     jobUpdateRecordMapper.insert(jobUpdateRecord);
 
@@ -358,10 +361,10 @@ public class OrderController {
             request.setAttribute("ordersList", jobOrderMapper.selectByOrderSearch(orderSearch));
             request.setAttribute("orderSearch", orderSearch);
 
-            List<JobType> jobTypeList = jobTypeMapper.findAll();
-            List<JobGoods> jobGoodsList = jobGoodsMapper.findAll();
-            request.setAttribute("jobTypeList", jobTypeList);
-            request.setAttribute("jobGoodsList", jobGoodsList);
+//            List<JobType> jobTypeList = jobTypeMapper.findAll();
+//            List<JobGoods> jobGoodsList = jobGoodsMapper.findAll();
+//            request.setAttribute("jobTypeList", jobTypeList);
+//            request.setAttribute("jobGoodsList", jobGoodsList);
         }
 
         return "orderInfo";
@@ -392,10 +395,10 @@ public class OrderController {
 
         request.setAttribute("orderSearch", orderSearch);
 
-        List<JobType> jobTypeList = jobTypeMapper.findAll();
-        List<JobGoods> jobGoodsList = jobGoodsMapper.findAll();
-        request.setAttribute("jobTypeList", jobTypeList);
-        request.setAttribute("jobGoodsList", jobGoodsList);
+//        List<JobType> jobTypeList = jobTypeMapper.findAll();
+//        List<JobGoods> jobGoodsList = jobGoodsMapper.findAll();
+//        request.setAttribute("jobTypeList", jobTypeList);
+//        request.setAttribute("jobGoodsList", jobGoodsList);
 
         return "orderInfo";
     }

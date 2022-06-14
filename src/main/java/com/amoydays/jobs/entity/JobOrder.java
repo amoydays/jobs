@@ -23,6 +23,12 @@ public class JobOrder {
 
     private String goodsId;
 
+    private String goodsName;
+
+    private String areaName;
+
+    private String typeName;
+
     private Integer weight;
 
     private Date date;
@@ -31,7 +37,7 @@ public class JobOrder {
 
     private String vesselVoyage;
 
-    public JobOrder(String id, String driver, String carNum, String telephone, String goodsInfo, Integer goodsNum, String time, String typeId, String areaId, String goodsId, Integer weight, Date date, String duty, String vesselVoyage) {
+    public JobOrder(String id, String driver, String carNum, String telephone, String goodsInfo, Integer goodsNum, String time, String typeId, String areaId, String goodsId, String goodsName, String areaName, String typeName, Integer weight, Date date, String duty, String vesselVoyage) {
         this.id = id;
         this.driver = driver;
         this.carNum = carNum;
@@ -42,6 +48,9 @@ public class JobOrder {
         this.typeId = typeId;
         this.areaId = areaId;
         this.goodsId = goodsId;
+        this.goodsName = goodsName;
+        this.areaName = areaName;
+        this.typeName = typeName;
         this.weight = weight;
         this.date = date;
         this.duty = duty;
@@ -130,6 +139,30 @@ public class JobOrder {
 
     public void setGoodsId(String goodsId) {
         this.goodsId = goodsId == null ? null : goodsId.trim();
+    }
+
+    public String getGoodsName() {
+        return goodsName;
+    }
+
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName == null ? null : goodsName.trim();
+    }
+
+    public String getAreaName() {
+        return areaName;
+    }
+
+    public void setAreaName(String areaName) {
+        this.areaName = areaName == null ? null : areaName.trim();
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName == null ? null : typeName.trim();
     }
 
     public Integer getWeight() {

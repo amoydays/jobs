@@ -4,6 +4,7 @@ import com.amoydays.jobs.entity.JobOrder;
 import com.amoydays.jobs.vo.OrderSearch;
 
 import java.util.List;
+
 public interface JobOrderMapper {
     int deleteByPrimaryKey(String id);
 
