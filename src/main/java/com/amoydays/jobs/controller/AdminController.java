@@ -168,9 +168,9 @@ public class AdminController {
             addUpdateInRecord(session.getAttribute("adminUserName").toString(), ori, jobNotice);
             jobNoticeMapper.deleteAll();
             jobNoticeMapper.insert(jobNotice);
-            request.setAttribute("result", "通知消息登记成功！");
+            request.setAttribute("result", "公共通知登记成功！");
         } else {
-            request.setAttribute("result", "通知消息不能为空！");
+            request.setAttribute("result", "公共通知不能为空！");
         }
 
         return goNoticeAdd(request);
@@ -192,7 +192,7 @@ public class AdminController {
             addUpdateInRecord(session.getAttribute("adminUserName").toString(), new JobWarn(), jobWarn);
             jobWarnMapper.insert(jobWarn);
         } else {
-            request.setAttribute("result", "警示信息不能为空！");
+            request.setAttribute("result", "客户提醒不能为空！");
             return "admin/warnAdd";
         }
 
@@ -246,7 +246,7 @@ public class AdminController {
             addUpdateInRecord(session.getAttribute("adminUserName").toString(), jobWarnMapper.selectByPrimaryKey(jobWarn.getId()), jobWarn);
             jobWarnMapper.updateByPrimaryKeySelective(jobWarn);
         } else {
-            request.setAttribute("result", "警示信息不能为空！");
+            request.setAttribute("result", "客户提醒不能为空！");
             return "admin/warnUpdate";
         }
 
