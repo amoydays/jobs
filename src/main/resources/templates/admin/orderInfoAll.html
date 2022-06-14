@@ -18,7 +18,7 @@
 </head>
 <body>
 <div class="searchw">
-    <div class="searchTitle">现代码头作业预登记内部查询</div>
+    <div class="searchTitle">内部查询</div>
     <div class="searchcont">
         <form method="post" id="form1">
             <div class="inputs input_orderinfo">
@@ -83,8 +83,8 @@
                     <input type="button" value="预登记查询" id="orderSearch"/>
                     <input type="button" value="重置" onclick="goOrderAll()" class="gotoaddPage"/>
                     <input type="button" value="客户更改查询" onclick="goUpdateRecord()" class="gotoaddPage"/>
-                    <input type="button" value="通知消息" onclick="goNoticeAdd()" class="gotoaddPage"/>
-                    <input type="button" value="警示消息" onclick="warnSearch()" class="gotoaddPage"/>
+                    <input type="button" value="公共通知" onclick="goNoticeAdd()" class="gotoaddPage"/>
+                    <input type="button" value="客户提醒" onclick="warnSearch()" class="gotoaddPage"/>
                 </li>
             </div>
         </form>
@@ -97,7 +97,7 @@
                 <th>船名航次</th>
                 <th>件数</th>
                 <th>重量</th>
-                <th>手机</th>
+                <th colspan="2">操作</th>
             </tr>
             <tr th:each="order:${ordersList}" class="orderTr">
                 <td align="center" th:text="${order.time}"></td>
@@ -109,7 +109,8 @@
                 <td align="center" th:text="${order.vesselVoyage}"></td>
                 <td align="center" th:text="${order.goodsNum}?${order.goodsNum}:0" class="goodsNumTd"></td>
                 <td align="center" th:text="${order.weight}?${order.weight}:0" class="weightTd"></td>
-                <td align="center" th:onclick="showTelephone([[${order.telephone}]])">查看</td>
+                <td align="center" th:onclick="showTelephone([[${order.telephone}]])">手机</td>
+                <td align="center" th:onclick="goWarnAddWithDriTel([[${order.driver}]],[[${order.telephone}]])">提醒</td>
                 <!-- td align="center">
                     <input type="button" value="修改" onclick="gotoUpdatePage('${order.id }')" />
                     <input type="button" value="刪除" class="deletes"/>
@@ -125,6 +126,7 @@
                 <td align="center" id="goodsNumSum"></td>
                 <td align="center" id="weightSum"></td>
                 <td></td>
+                <td></td>
             </tr>
         </table>
     </div>
@@ -132,7 +134,7 @@
 </div>
 
 <script>
-        // 定时2分钟读取一次更新文本
+        // 定时1分钟读取一次更新文本
         setInterval(function(){
             var params="randon="+ new Date().getTime();
 			$.ajax({
@@ -149,7 +151,11 @@
 					console.log("获取UpdateString失败!");
 				}
 			});
-        },2*60*1000);
+        },1*60*1000);
+
+        function goWarnAddWithDriTel(driver,telephone){
+            window.location.href="/admin/goWarnAdd?driver="+driver+"&telephone="+telephone;
+        }
 
         function showTelephone(telephone){
             alert('手机号码：'+telephone);

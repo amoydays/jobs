@@ -14,6 +14,18 @@ public class OrderSearch {
 
     private String isRead;
 
+    private String operName;
+
+    private String tbName;
+
+    public String getTbName() {
+        return tbName;
+    }
+
+    public void setTbName(String tbName) {
+        this.tbName = tbName;
+    }
+
     public String getStartDate() {
         return startDate;
     }
@@ -92,5 +104,13 @@ public class OrderSearch {
 
     public void setIsRead(String isRead) {
         this.isRead = isRead;
+    }
+
+    public String getOperName() {
+        return operName;
+    }
+
+    public void setOperName(String operName) {
+        this.operName = operName;
     }
 }

@@ -49,7 +49,9 @@ input[type="radio"]{margin:0 .05rem;line-height:.5rem;vertical-align:middle;disp
 .orderinfo tr:nth-child(2n-1){background: #f2f3f5;}
 .orderinfo input[type="button"]{outline:none; font-size:.24rem;height:.4rem;padding:0 .1rem;border: none;background:none;color: #fff;background: #2f8efc;display:inline-block;border-radius: 2px;box-shadow: 1px 1px 1px #111;}
 .gotoaddPage{margin: .2rem .1rem;padding:0 .1rem;display:inline-block;height:.5rem;line-height:.5rem;background: #2f8efc;box-shadow: 1px 1px 1px #111;color:#fff;border-radius:.05rem;}
-.notice{color:red;line-height:.4rem;padding:.2rem 2.2rem}
-
+.notice{color:red;line-height:.4rem;padding:.2rem .3rem;}
+.notice .pr{margin-top:.2rem;color:#333;  position:relative;border:1px solid #ccc;border-radius:.1rem;padding:.1rem;box-shadow:1px 1px 2px 2px #eee;padding:.2rem .25rem}
+.notice .close{font-weight:bold;cursor: pointer;  float:right;position:absolute;top:-.15rem;right:-.15rem;height:.4rem;width:.4rem;background:#333;border-radius:100%;text-align:center;color:#fff }
 .noticeAdd textarea{display:inline-block;vertical-align:top;width:70%}
 .warnAdd textarea{display:inline-block;vertical-align:top;width:70%}
+.tc{text-align:center !important}

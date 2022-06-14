@@ -14,7 +14,7 @@ public interface JobWarnMapper {
 
     JobWarn selectByPrimaryKey(Integer id);
 
-    JobWarn selectOneNoReadByDriverTel(OrderSearch orderSearch);
+    List<JobWarn> selectNoReadByDriverTel(OrderSearch orderSearch);
 
     List<JobWarn> selectByOrderSearch(OrderSearch orderSearch);
 

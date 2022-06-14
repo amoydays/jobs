@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amoydays.jobs.dao.JobInRecordMapper">
+  <resultMap id="BaseResultMap" type="com.amoydays.jobs.entity.JobInRecord">
+    <constructor>
+      <idArg column="ID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="oper_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="tb_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="column_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="ori_value" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="now_value" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, oper_name, time, tb_name, column_name, ori_value, now_value
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from job_in_record
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByOrderSearch" parameterType="com.amoydays.jobs.vo.OrderSearch" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from job_in_record
+    <trim prefix="where " suffixOverrides="and">
+      <if test="startDate != null and endDate != null">
+        time between #{startDate} and #{endDate} and
+      </if>
+      <if test="operName != null">
+        oper_name like CONCAT('%',#{operName},'%') and
+      </if>
+      <if test="tbName != null">
+        tb_name like CONCAT('%',#{tbName},'%') and
+      </if>
+    </trim>
+    order by time desc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from job_in_record
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amoydays.jobs.entity.JobInRecord">
+    insert into job_in_record (oper_name, time,
+      tb_name, column_name, ori_value, 
+      now_value)
+    values (#{operName,jdbcType=VARCHAR}, #{time,jdbcType=TIMESTAMP},
+      #{tbName,jdbcType=VARCHAR}, #{columnName,jdbcType=VARCHAR}, #{oriValue,jdbcType=VARCHAR}, 
+      #{nowValue,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.amoydays.jobs.entity.JobInRecord">
+    insert into job_in_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="operName != null">
+        oper_name,
+      </if>
+      <if test="time != null">
+        time,
+      </if>
+      <if test="tbName != null">
+        tb_name,
+      </if>
+      <if test="columnName != null">
+        column_name,
+      </if>
+      <if test="oriValue != null">
+        ori_value,
+      </if>
+      <if test="nowValue != null">
+        now_value,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="operName != null">
+        #{operName,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null">
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tbName != null">
+        #{tbName,jdbcType=VARCHAR},
+      </if>
+      <if test="columnName != null">
+        #{columnName,jdbcType=VARCHAR},
+      </if>
+      <if test="oriValue != null">
+        #{oriValue,jdbcType=VARCHAR},
+      </if>
+      <if test="nowValue != null">
+        #{nowValue,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amoydays.jobs.entity.JobInRecord">
+    update job_in_record
+    <set>
+      <if test="operName != null">
+        oper_name = #{operName,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null">
+        time = #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tbName != null">
+        tb_name = #{tbName,jdbcType=VARCHAR},
+      </if>
+      <if test="columnName != null">
+        column_name = #{columnName,jdbcType=VARCHAR},
+      </if>
+      <if test="oriValue != null">
+        ori_value = #{oriValue,jdbcType=VARCHAR},
+      </if>
+      <if test="nowValue != null">
+        now_value = #{nowValue,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amoydays.jobs.entity.JobInRecord">
+    update job_in_record
+    set oper_name = #{operName,jdbcType=VARCHAR},
+      time = #{time,jdbcType=TIMESTAMP},
+      tb_name = #{tbName,jdbcType=VARCHAR},
+      column_name = #{columnName,jdbcType=VARCHAR},
+      ori_value = #{oriValue,jdbcType=VARCHAR},
+      now_value = #{nowValue,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

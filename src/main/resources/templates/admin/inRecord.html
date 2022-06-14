@@ -18,32 +18,32 @@
 </head>
 <body>
 <div class="searchw">
-    <div class="searchTitle">修改记录查询</div>
+    <div class="searchTitle">消息发送记录查询</div>
     <div class="searchcont">
         <form method="post" id="form1">
             <div class="inputs input_orderinfo">
                 <li>
                     <span>开始时间：</span>
                     <div class="rbox2">
-                        <input type="text" name="startDate" id="jobOrderDateStart" th:value="${orderSearch.startDate }"/>
+                        <input type="text" name="startDate" id="jobOrderDateStart" th:value="${orderSearchNew.startDate }"/>
                     </div>
                 </li>
                 <li>
                     <span>结束时间：</span>
                     <div class="rbox2">
-                        <input type="text" name="endDate" id="jobOrderDateEnd" th:value="${orderSearch.endDate }"/>
+                        <input type="text" name="endDate" id="jobOrderDateEnd" th:value="${orderSearchNew.endDate }"/>
                     </div>
                 </li>
                 <li>
-                    <span>手机：</span>
+                    <span>操作员：</span>
                     <div class="rbox2">
-                        <input type="text" name="telephone" th:value="${orderSearch.telephone}" id="telephone"/>
+                        <input type="text" name="operName" th:value="${orderSearchNew.operName}" id="operName"/>
                     </div>
                 </li>
                 <li>
-                    <span>作业单位：</span>
+                    <span>表名：</span>
                     <div class="rbox2">
-                        <input type="text" name="driver" th:value="${orderSearch.driver}" id="driver"/>
+                        <input type="text" name="tbName" th:value="${orderSearchNew.tbName}" id="tbName"/>
                     </div>
                 </li>
                 <li>
@@ -55,16 +55,16 @@
         <table width="100%" class="orderinfo" cellpadding="0" cellspacing="0">
             <tr>
                 <th>日期</th>
-                <th>修改单位</th>
-                <th>修改手机</th>
+                <th>操作员</th>
+                <th>表名</th>
                 <th>修改项</th>
                 <th>原值</th>
                 <th>新值</th>
             </tr>
-            <tr th:each="record:${jobUpdateRecordList}" class="orderTr">
+            <tr th:each="record:${jobInRecordList}" class="orderTr">
                 <td align="center" th:text="${#dates.format(record.time, 'yyyy-MM-dd HH:mm:ss')}"></td>
-                <td align="center" th:text="${record.driver}"></td>
-                <td align="center" th:text="${record.telephone}"></td>
+                <td align="center" th:text="${record.operName}"></td>
+                <td align="center" th:text="${record.tbName}"></td>
                 <td align="center" th:text="${record.columnName}"></td>
                 <td align="center" th:text="${record.oriValue}"></td>
                 <td align="center" th:text="${record.nowValue}"></td>
@@ -116,7 +116,7 @@
 		}
 		$('#orderSearch').on('click', function() {
 			if (true == cha(document.getElementById("form1"))) {
-				document.getElementById("form1").action = "/admin/updateRecordSearch";
+				document.getElementById("form1").action = "/admin/inRecordSearch";
 				document.getElementById("form1").submit();
 			}
 		})

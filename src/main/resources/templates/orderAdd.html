@@ -20,17 +20,22 @@
     <div class="searchTitle">现代码头作业预登记</div>
     <div class="searchcont">
         <div class="notice">
-            <div class="rbox" th:if="${noticeIsShow == '1'}">
-                <p th:text="|通知：${jobNotice.content}|" />
-                <label>
-                    <input type="radio" th:text="下次不再显示" onclick="noticeNoShow()" />
-                </label>
+            <div class="tc">
+                15点前预登记今天夜班、明天白班；15点后只能进行修改。
             </div>
-            <div class="rbox" th:if="${jobWarn.content}">
-                <p th:text="|警示：${jobWarn.content}|" />
-                <label>
-                    <input type="radio" th:text="下次不再显示" th:onclick="warnNoShow([[${jobWarn.id }]])" />
-                </label>
+            <div class="pr" th:if="${noticeIsShow == '1'}" th:id="noticeDiv">
+                <p th:text="|公共通知：${jobNotice.content}|" />
+                <span class="close" onclick="noticeNoShow()">X</span>
+<!--                <label>-->
+<!--                    <input type="radio" th:text="下次不再显示" onclick="noticeNoShow()" />-->
+<!--                </label>-->
+            </div>
+            <div class="pr" th:each="jobWarn,status:${jobWarnList}" th:id="|warn${jobWarn.id}|">
+                <p th:text="|客户提醒${status.count}：${jobWarn.content}|" />
+                <span class="close" th:onclick="warnNoShow([[${jobWarn.id }]])">X</span>
+<!--                <label>-->
+<!--                    <input type="radio" th:text="下次不再显示" th:onclick="warnNoShow([[${jobWarn.id }]])" />-->
+<!--                </label>-->
             </div>
         </div>
         <form method="post" id="form1">
@@ -70,8 +75,8 @@
                 <li>
                     <span>作业时间：</span>
                     <div class="rbox">
-                        <label><input type="radio" name="time" th:value="${today }+'夜班'" checked="true" th:text="|${today}夜班(18:30-07:00)|"></input></label>
-                        <label><input type="radio" name="time" th:value="${tomorrow }+'白班'" th:text="|${tomorrow}白班(07:30-18:00)|"></input></label>
+                        <label><input type="radio" name="time" th:value="${today }+'夜班'" checked="true" th:text="|${today}夜班(19:00-6:00)|" th:disabled="${noShow == '1'}"></input></label>
+                        <label><input type="radio" name="time" th:value="${tomorrow }+'白班'" th:text="|${tomorrow}白班(08:00-18:00)|" th:disabled="${noShow == '1'}"></input></label>
 <!--                        <label><input type="radio" name="time" th:value="${tomorrow }+'夜班'"-->
 <!--                                      th:text="|${tomorrow}夜班|"></input></label>-->
 <!--                        <label><input type="radio" name="time" th:value="${tomorrowNext }+'白班'"-->
@@ -96,8 +101,8 @@
                     <input type="text" placeholder="件数、重量二选一" name="weight" id="weight"/>
                 </li>
                 <div class="btn">
-                    <input type="button" value="预登记" id="order"/>
-                    <input type="reset" value="重置" id="orderReset"/>
+                    <input type="button" value="保存" id="order"/>
+<!--                    <input type="reset" value="重置" id="orderReset"/>-->
                     <input type="button" value="查询和修改" onclick="gotoInfoPage()"/>
                 </div>
             </div>
@@ -108,7 +113,7 @@
 
 <script>
 		function warnNoShow(id){
-		    console.log(id);
+		    //console.log(id);
 			var params="id="+id+"&randon="+ new Date().getTime();
 			$.ajax({
 			    type: "get",
@@ -121,6 +126,7 @@
 					alert("网络传输出错,请再试一次！");
 				}
 			});
+			document.getElementById("warn"+id).style.display = "none";
 		}
 		function noticeNoShow(){
 			var params="randon="+ new Date().getTime();
@@ -135,6 +141,7 @@
 					alert("网络传输出错,请再试一次！");
 				}
 			});
+			document.getElementById("noticeDiv").style.display = "none";
 		}
 		function gotoInfoPage(){
 			window.location.href="/goOrderInfo";

@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -37,6 +38,8 @@ public class OrderController {
         put("date", "作业日期");
         put("duty", "作业班别");
     }};
+
+    private final int timeLimit = 15;
     @Resource
     JobAreaMapper jobAreaMapper;
     @Resource
@@ -62,10 +65,10 @@ public class OrderController {
     private void setInit(HttpServletRequest request) {
         // 当前时间
         Calendar calendar = Calendar.getInstance();
-        // 默认预约今天晚班、明天白班、明天夜班、后天白班
-        // 14点之后只能预约明天晚班、后天白班、后天夜班、大后天白班
-        if (calendar.get(Calendar.HOUR_OF_DAY) >= 14) {
-            calendar.add(Calendar.DATE, 1);
+        // 默认预约今天晚班、明天白班，15点之后不预约
+        if (calendar.get(Calendar.HOUR_OF_DAY) >= timeLimit) {
+            request.setAttribute("noShow", "1");
+            //calendar.add(Calendar.DATE, 1);
         }
         String today = sdf.format(calendar.getTime());
         calendar.add(Calendar.DATE, 1);
@@ -201,6 +204,11 @@ public class OrderController {
 
     }
 
+    @RequestMapping("/")
+    public String index(HttpServletRequest request, HttpServletResponse response) {
+        return goOrderAdd(request, response);
+    }
+
     @GetMapping("/goOrderAdd")
     public String goOrderAdd(HttpServletRequest request, HttpServletResponse response) {
         setInit(request);
@@ -228,7 +236,7 @@ public class OrderController {
         }
         request.setAttribute("jobOrder", jobOrder);
 
-        // 通知消息
+        // 公共通知
         JobNotice jobNotice = jobNoticeMapper.selectTopOne();
         if (jobNotice != null && jobNotice.getContent() != null && !jobNotice.getContent().equals("")) {
             // 客户端通知消息Id为空、消息是否显示为空或者1、客户端消息Id和服务器Id不一致时，客户端显示通知消息
@@ -247,21 +255,18 @@ public class OrderController {
         }
         request.setAttribute("jobNotice", jobNotice);
 
-        // 警示消息
+        // 客户提醒
         OrderSearch orderSearch = new OrderSearch();
         // 先按driver作业单位查询
         orderSearch.setDriver(jobOrder.getDriver());
-        JobWarn jobWarn = jobWarnMapper.selectOneNoReadByDriverTel(orderSearch);
-        if (jobWarn == null) {
+        List<JobWarn> jobWarnList = jobWarnMapper.selectNoReadByDriverTel(orderSearch);
+        if (jobWarnList == null) {
             // 作业单位匹配不到警示消息，再按telephone手机号码查询
             orderSearch.setDriver(null);
             orderSearch.setTelephone(jobOrder.getTelephone());
-            jobWarn = jobWarnMapper.selectOneNoReadByDriverTel(orderSearch);
-            if (jobWarn == null) {
-                jobWarn = new JobWarn();
-            }
+            jobWarnList = jobWarnMapper.selectNoReadByDriverTel(orderSearch);
         }
-        request.setAttribute("jobWarn", jobWarn);
+        request.setAttribute("jobWarnList", jobWarnList);
 
         return "orderAdd";
     }
@@ -278,19 +283,37 @@ public class OrderController {
     @GetMapping("/noticeNoShow")
     @ResponseBody
     public void noticeNoShow(HttpServletRequest request, HttpServletResponse response) {
-        for (Cookie cookie : request.getCookies()) {
-            if (cookie.getName().equals("noticeIsShow")) {
-                // noticeIsShow设置为0，不需要显示
-                request.setAttribute("noticeIsShow", "0");
-                Cookie noticeIsShowCookie = new Cookie("noticeIsShow", "0");
-                noticeIsShowCookie.setMaxAge(60 * 60 * 24 * 365);
-                response.addCookie(noticeIsShowCookie);
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (cookie.getName().equals("noticeIsShow")) {
+                    // noticeIsShow设置为0，不需要显示
+                    request.setAttribute("noticeIsShow", "0");
+                    Cookie noticeIsShowCookie = new Cookie("noticeIsShow", "0");
+                    noticeIsShowCookie.setMaxAge(60 * 60 * 24 * 365);
+                    response.addCookie(noticeIsShowCookie);
+                }
             }
         }
     }
 
     @PostMapping("/orderAdd")
     public String orderAdd(JobOrder jobOrder, HttpServletRequest request, HttpServletResponse response, boolean isAdd) {
+        // 15点之后不预约，只能修改
+        if (isAdd) {
+            // 当前时间
+            Calendar calendar = Calendar.getInstance();
+            if (calendar.get(Calendar.HOUR_OF_DAY) >= timeLimit) {
+                // 直接进入查询页面
+                if (jobOrder != null && jobOrder.getTelephone() != null && !jobOrder.getTelephone().equals("")) {
+                    OrderSearch orderSearch = new OrderSearch();
+                    orderSearch.setTelephone(jobOrder.getTelephone());
+                    return orderSearch(orderSearch, request);
+                } else {
+                    return orderSearch(null, request);
+                }
+            }
+        }
+
         String date = jobOrder.getTime().substring(0, 10);
         String duty = jobOrder.getTime().substring(10);
         try {
@@ -319,7 +342,7 @@ public class OrderController {
         driverCookie.setMaxAge(60 * 60 * 24 * 365);
         response.addCookie(driverCookie);
 
-        // 直接进入查询页面
+        // 进入查询页面
         OrderSearch orderSearch = new OrderSearch();
         orderSearch.setTelephone(jobOrder.getTelephone());
         return orderSearch(orderSearch, request);
@@ -358,18 +381,21 @@ public class OrderController {
 
     @GetMapping("/goOrderInfo")
     public String goOrderInfo(HttpServletRequest request) {
+        OrderSearch orderSearch = new OrderSearch();
         if (request.getCookies() != null) {
-            OrderSearch orderSearch = new OrderSearch();
             for (Cookie cookie : request.getCookies()) {
                 if (cookie.getName().equals("telephone")) {
                     orderSearch.setTelephone(cookie.getValue());
                 }
             }
-
-            if (orderSearch.getTelephone() != null && !orderSearch.getTelephone().equals("")) {
-                return orderSearch(orderSearch, request);
-            }
         }
+
+        request.setAttribute("orderSearch", orderSearch);
+
+        List<JobType> jobTypeList = jobTypeMapper.findAll();
+        List<JobGoods> jobGoodsList = jobGoodsMapper.findAll();
+        request.setAttribute("jobTypeList", jobTypeList);
+        request.setAttribute("jobGoodsList", jobGoodsList);
 
         return "orderInfo";
     }

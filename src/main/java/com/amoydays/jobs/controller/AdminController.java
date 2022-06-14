@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -19,6 +21,22 @@ import java.util.*;
 @Controller
 public class AdminController {
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+    private final Map<String, String> columnNames = new HashMap<String, String>() {{
+        put("driver", "作业单位");
+        put("telephone", "手机");
+        put("goodsNum", "作业件数");
+        put("weight", "作业重量");
+        put("typeId", "作业类型");
+        put("goodsId", "作业货名");
+        put("areaId", "作业区域");
+        put("vesselVoyage", "船名航次");
+        put("time", "作业时间");
+        put("date", "作业日期");
+        put("duty", "作业班别");
+        put("isRead", "是否已读");
+        put("content", "消息内容");
+    }};
     @Resource
     JobAreaMapper jobAreaMapper;
     @Resource
@@ -39,6 +57,9 @@ public class AdminController {
 
     @Resource
     JobWarnMapper jobWarnMapper;
+
+    @Resource
+    JobInRecordMapper jobInRecordMapper;
 
     private void setInitNoTime(HttpServletRequest request) {
         List<JobArea> jobAreaList = jobAreaMapper.findAll();
@@ -101,9 +122,7 @@ public class AdminController {
         OrderSearch orderSearch = new OrderSearch();
         String time = sdf.format(calendar.getTime());
         orderSearch.setStartDate(time);
-        if (time.indexOf(" 23:59:59") == -1) {
-            orderSearch.setEndDate(time + " 23:59:59");
-        }
+        orderSearch.setEndDate(time + " 23:59:59");
         List<JobUpdateRecord> jobUpdateRecordList = jobUpdateRecordMapper.selectByOrderSearch(orderSearch);
         request.setAttribute("jobUpdateRecordList", jobUpdateRecordList);
         request.setAttribute("orderSearch", orderSearch);
@@ -128,13 +147,25 @@ public class AdminController {
     @GetMapping("/admin/goNoticeAdd")
     public String goNoticeAdd(HttpServletRequest request) {
         JobNotice jobNotice = jobNoticeMapper.selectTopOne();
+        if (jobNotice == null) {
+            jobNotice = new JobNotice();
+        }
         request.setAttribute("jobNotice", jobNotice);
         return "admin/noticeAdd";
     }
 
     @PostMapping("/admin/noticeAdd")
-    public String noticeAdd(JobNotice jobNotice, HttpServletRequest request) {
+    public String noticeAdd(JobNotice jobNotice, HttpServletRequest request, HttpSession session) {
         if (jobNotice != null && jobNotice.getContent() != null && !jobNotice.getContent().equals("")) {
+            JobNotice ori = jobNoticeMapper.selectTopOne();
+            // JobNotice只需要一条记录，Id不用记录更新
+            if (ori != null) {
+                ori.setId(null);
+            }else {
+                ori = new JobNotice();
+            }
+            // 增加修改记录
+            addUpdateInRecord(session.getAttribute("adminUserName").toString(), ori, jobNotice);
             jobNoticeMapper.deleteAll();
             jobNoticeMapper.insert(jobNotice);
             request.setAttribute("result", "通知消息登记成功！");
@@ -146,15 +177,19 @@ public class AdminController {
     }
 
     @GetMapping("/admin/goWarnAdd")
-    public String goWarnAdd() {
+    public String goWarnAdd(String driver, String telephone, HttpServletRequest request) {
+        request.setAttribute("driver", driver);
+        request.setAttribute("telephone", telephone);
         return "admin/warnAdd";
     }
 
     @PostMapping("/admin/warnAdd")
-    public String warnAdd(JobWarn jobWarn, HttpServletRequest request) {
+    public String warnAdd(JobWarn jobWarn, HttpServletRequest request, HttpSession session) {
         if (jobWarn != null && jobWarn.getContent() != null && !jobWarn.getContent().equals("")) {
             jobWarn.setTime(new Date());
             jobWarn.setIsRead(false);
+            // 增加修改记录
+            addUpdateInRecord(session.getAttribute("adminUserName").toString(), new JobWarn(), jobWarn);
             jobWarnMapper.insert(jobWarn);
         } else {
             request.setAttribute("result", "警示信息不能为空！");
@@ -203,10 +238,12 @@ public class AdminController {
     }
 
     @PostMapping("/admin/warnUpdate")
-    public String warnUpdate(JobWarn jobWarn, HttpServletRequest request) {
+    public String warnUpdate(JobWarn jobWarn, HttpServletRequest request, HttpSession session) {
         if (jobWarn != null && jobWarn.getContent() != null && !jobWarn.getContent().equals("")) {
             jobWarn.setTime(new Date());
             jobWarn.setIsRead(false);
+            // 增加修改记录
+            addUpdateInRecord(session.getAttribute("adminUserName").toString(), jobWarnMapper.selectByPrimaryKey(jobWarn.getId()), jobWarn);
             jobWarnMapper.updateByPrimaryKeySelective(jobWarn);
         } else {
             request.setAttribute("result", "警示信息不能为空！");
@@ -230,8 +267,83 @@ public class AdminController {
 
     @GetMapping("/admin/warnDel")
     @ResponseBody
-    public void warnDel(int id) {
+    public void warnDel(int id, HttpSession session) {
+        // 增加修改记录
+        addUpdateInRecord(session.getAttribute("adminUserName").toString(), jobWarnMapper.selectByPrimaryKey(id), new JobWarn());
         jobWarnMapper.deleteByPrimaryKey(id);
     }
 
+    @RequestMapping("/admin/inRecordSearch")
+    public String inRecordSearch(OrderSearch orderSearch, HttpServletRequest request) {
+        if (orderSearch == null || orderSearch.getStartDate() == null || orderSearch.getStartDate().equals("") || orderSearch.getEndDate() == null || orderSearch.getEndDate().equals("")) {
+            orderSearch = new OrderSearch();
+            // 当前时间
+            Calendar calendar = Calendar.getInstance();
+            String time = sdf.format(calendar.getTime());
+            orderSearch.setStartDate(time);
+            orderSearch.setEndDate(time + " 23:59:59");
+        } else {
+            if (orderSearch.getEndDate().indexOf(" 23:59:59") == -1) {
+                orderSearch.setEndDate(orderSearch.getEndDate() + " 23:59:59");
+            }
+        }
+        List<JobInRecord> jobInRecordList = jobInRecordMapper.selectByOrderSearch(orderSearch);
+        request.setAttribute("jobInRecordList", jobInRecordList);
+        request.setAttribute("orderSearchNew", orderSearch);
+
+        return "admin/inRecord";
+    }
+
+    private void addUpdateInRecord(String operName, Object oriObj, Object newObj) {
+        if (oriObj == null || newObj == null) {
+            return;
+        }
+        Field[] fields = oriObj.getClass().getDeclaredFields();
+        Date date = new Date();
+        Object nullVal = new Object();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object oriVal = field.get(oriObj);
+                Object newVal = field.get(newObj);
+                if (oriVal == null) {
+                    oriVal = nullVal;
+                }
+                if (newVal == null) {
+                    newVal = nullVal;
+                }
+                if (!oriVal.equals(newVal)) {
+                    String name = field.getName().toString();
+                    // date和duty的修改记录已包含在time字段里面，无需记录
+                    if (name.equals("date") || name.equals("duty")) {
+                        continue;
+                    }
+                    String realName = columnNames.get(name);
+                    JobInRecord record = new JobInRecord();
+                    record.setTime(date);
+                    record.setOperName(operName);
+                    record.setTbName(oriObj.getClass().getName().substring(oriObj.getClass().getName().lastIndexOf(".") + 1));
+                    if (realName != null) {
+                        record.setColumnName(realName);
+                    } else {
+                        record.setColumnName(name);
+                    }
+
+                    record.setOriValue(oriVal.toString());
+                    record.setNowValue(newVal.toString());
+                    if (oriVal == nullVal) {
+                        record.setOriValue("空值");
+                    }
+                    if (newVal == nullVal) {
+                        record.setNowValue("空值");
+                    }
+                    jobInRecordMapper.insert(record);
+
+                }
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
 }

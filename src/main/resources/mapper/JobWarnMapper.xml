@@ -20,7 +20,7 @@
     from job_warn
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <select id="selectOneNoReadByDriverTel" parameterType="com.amoydays.jobs.vo.OrderSearch" resultMap="BaseResultMap">
+  <select id="selectNoReadByDriverTel" parameterType="com.amoydays.jobs.vo.OrderSearch" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from job_warn
@@ -34,7 +34,6 @@
       is_read = 0
     </trim>
     order by time desc
-    limit 0,1
   </select>
   <select id="selectByOrderSearch" parameterType="com.amoydays.jobs.vo.OrderSearch" resultMap="BaseResultMap">
     select

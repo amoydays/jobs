@@ -17,7 +17,7 @@
 </head>
 <body>
 <div class="searchw noticeAdd">
-    <div class="searchTitle">现代码头通知消息登记</div>
+    <div class="searchTitle">公共通知登记</div>
     <div class="searchcont">
         <div class="notice"><p th:text="${result }"></p></div>
         <form method="post" id="form1">
@@ -27,7 +27,7 @@
                     <textarea placeholder="必填项" name="content" id="content" th:text="${jobNotice.content}" cols="30" rows="10"></textarea>
                 </li>
                 <div class="btn">
-                    <input type="button" value="消息登记" id="order"/>
+                    <input type="button" value="公共通知登记" id="order"/>
                     <input type="button" value="预登记查询" onclick="goOrderAll()"/>
                 </div>
             </div>

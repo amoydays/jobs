@@ -17,26 +17,26 @@
 </head>
 <body>
 <div class="searchw">
-    <div class="searchTitle">现代码头通知警示登记</div>
+    <div class="searchTitle">客户提醒登记</div>
     <div class="searchcont warnAdd">
         <div class="notice"><p th:text="${result }"></p></div>
         <form method="post" id="form1">
             <div class="inputs">
                 <li>
                     <span>目标单位：</span>
-                    <input type="text" placeholder="目标单位和手机至少选一个" name="driver" id="driver"/>
+                    <input type="text" placeholder="目标单位和手机至少选一个" name="driver" id="driver" th:value="${driver}" />
                 </li>
                 <li>
                     <span>目标手机：</span>
-                    <input type="text" placeholder="目标单位和手机至少选一个" name="telephone" id="telephone"/>
+                    <input type="text" placeholder="目标单位和手机至少选一个" name="telephone" id="telephone" th:value="${telephone}" />
                 </li>
                 <li>
                     <span>警示消息：</span>
                     <textarea placeholder="必填项" name="content" id="content" cols="30" rows="10"></textarea>
                 </li>
                 <div class="btn">
-                    <input type="button" value="警示登记" id="order"/>
-                    <input type="button" value="警示查询" onclick="warnSearch()"/>
+                    <input type="button" value="客户提醒登记" id="order"/>
+                    <input type="button" value="客户提醒查询" onclick="warnSearch()"/>
                 </div>
             </div>
         </form>
