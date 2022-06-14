@@ -12,8 +12,10 @@ public class AdminLoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String uri = request.getRequestURI();
         if (uri.startsWith("/admin") && null == request.getSession().getAttribute("adminUserName")) {
-            request.setAttribute("result", "请登录！");
             response.sendRedirect(request.getContextPath() + "/goLogin");
+            return false;
+        } else if (uri.startsWith("/super") && null == request.getSession().getAttribute("superUserName")) {
+            response.sendRedirect(request.getContextPath() + "/goSuperLogin");
             return false;
         } else {
             return true;

@@ -18,6 +18,16 @@ public class OrderSearch {
 
     private String tbName;
 
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getTbName() {
         return tbName;
     }

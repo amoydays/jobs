@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.amoydays.jobs.dao.AdminUserMapper">
-  <resultMap id="BaseResultMap" type="com.amoydays.jobs.entity.AdminUser">
+<mapper namespace="com.amoydays.jobs.dao.SuperUserMapper">
+  <resultMap id="BaseResultMap" type="com.amoydays.jobs.entity.SuperUser">
     <constructor>
       <idArg column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="passwd" javaType="java.lang.String" jdbcType="VARCHAR" />
@@ -10,38 +10,28 @@
   <sql id="Base_Column_List">
     name, passwd
   </sql>
-  <select id="login" parameterType="com.amoydays.jobs.entity.AdminUser" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from admin_user
+    from super_user
+    where name = #{name,jdbcType=VARCHAR}
+  </select>
+  <select id="login" parameterType="com.amoydays.jobs.entity.SuperUser" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from super_user
     where name = #{name,jdbcType=VARCHAR} and passwd = #{passwd,jdbcType=VARCHAR}
   </select>
-  <select id="selectByOrderSearch" parameterType="com.amoydays.jobs.vo.OrderSearch" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from admin_user
-    <trim prefix="where">
-      <if test="name != null">
-        name = #{name,jdbcType=VARCHAR}
-      </if>
-    </trim>
-  </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from admin_user
-    where name = #{name,jdbcType=VARCHAR}
-  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from admin_user
+    delete from super_user
     where name = #{name,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.amoydays.jobs.entity.AdminUser">
-    insert into admin_user (name, passwd)
+  <insert id="insert" parameterType="com.amoydays.jobs.entity.SuperUser">
+    insert into super_user (name, passwd)
     values (#{name,jdbcType=VARCHAR}, #{passwd,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.amoydays.jobs.entity.AdminUser">
-    insert into admin_user
+  <insert id="insertSelective" parameterType="com.amoydays.jobs.entity.SuperUser">
+    insert into super_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="name != null">
         name,
@@ -59,8 +49,8 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.amoydays.jobs.entity.AdminUser">
-    update admin_user
+  <update id="updateByPrimaryKeySelective" parameterType="com.amoydays.jobs.entity.SuperUser">
+    update super_user
     <set>
       <if test="passwd != null">
         passwd = #{passwd,jdbcType=VARCHAR},
@@ -68,8 +58,8 @@
     </set>
     where name = #{name,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.amoydays.jobs.entity.AdminUser">
-    update admin_user
+  <update id="updateByPrimaryKey" parameterType="com.amoydays.jobs.entity.SuperUser">
+    update super_user
     set passwd = #{passwd,jdbcType=VARCHAR}
     where name = #{name,jdbcType=VARCHAR}
   </update>

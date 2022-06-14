@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>现代码头作业预登记平台</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="no"/>
+    <meta name="full-screen" content="no"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta content="false" id="twcClient" name="twcClient"/>
+    <link rel="stylesheet" href="/css/style.css"/>
+    <script src="/js/setfont.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/qrcode.js"></script>
+</head>
+<body>
+<div class="searchw">
+    <div class="searchTitle">操作管理员更新</div>
+    <div class="searchcont warnAdd">
+        <div class="notice"><p th:text="${result }"></p></div>
+        <form method="post" id="form1">
+            <div class="inputs">
+                <li>
+                    <span>用户名：</span>
+                    <input type="text" placeholder="必填项" name="name" id="name" readonly="readonly" th:value="${adminUser.name}" />
+                </li>
+                <li>
+                    <span>密码：</span>
+                    <input type="text" placeholder="必填项" name="passwd" id="passwd" th:value="${adminUser.passwd}" />
+                </li>
+                <div class="btn">
+                    <input type="button" value="更新" id="order"/>
+                    <input type="button" value="操作管理员查询" onclick="adminUserSearch()"/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <br/>
+</div>
+
+<script>
+		function adminUserSearch(){
+			window.location.href="/super/adminUserSearch";
+		}
+
+		function cha(form) {
+			if (form.name.value.match(/^\s*$/)) {
+				form.name.focus();
+				alert("用户名 不能为空!");
+				return false;
+			}
+			if (form.passwd.value.match(/^\s*$/)) {
+				form.passwd.focus();
+				alert("密码 不能为空!");
+				return false;
+			}
+
+			return true;
+		}
+		$('#order').on('click', function() {
+			if (true == cha(document.getElementById("form1"))) {
+				document.getElementById("form1").action = "/super/adminUserUpdate";
+				document.getElementById("form1").submit();
+			}
+		})
+</script>
+</body>
+</html>

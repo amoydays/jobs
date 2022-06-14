@@ -13,6 +13,6 @@ public class JobsWebMvcConfigurer implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(adminLoginInterceptor).addPathPatterns("/admin/**");
+        registry.addInterceptor(adminLoginInterceptor).addPathPatterns("/admin/**").addPathPatterns("/super/**");
     }
 }

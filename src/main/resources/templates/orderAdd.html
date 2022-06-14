@@ -55,8 +55,7 @@
                     <span>作业货名：</span>
                     <div class="rbox">
                         <label th:each="jobGoods,status:${jobGoodsList}">
-                            <input type="radio" name="goodsId" th:value="${jobGoods.id }"
-                                   th:checked="${status.count==1}" th:text="${jobGoods.name }"></input>
+                            <input type="radio" name="goodsId" th:value="${jobGoods.id }" th:checked="${status.count==1}" th:text="${jobGoods.name }" class="goodsCheck"></input>
                         </label>
                         <input type="hidden" name="goodsName" id="goodsName" />
                     </div>

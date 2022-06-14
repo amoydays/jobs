@@ -18,7 +18,7 @@
 </head>
 <body>
 <div class="searchw">
-    <div class="searchTitle">消息发送记录查询</div>
+    <div class="searchTitle">消息发送查询</div>
     <div class="searchcont">
         <form method="post" id="form1">
             <div class="inputs input_orderinfo">
@@ -47,8 +47,8 @@
                     </div>
                 </li>
                 <li>
-                    <input type="button" value="修改记录查询" id="orderSearch"/>
-                    <input type="button" value="预登记查询" onclick="goOrderAll()" class="gotoaddPage"/>
+                    <input type="button" value="消息发送查询" id="orderSearch"/>
+                    <input type="button" value="操作员管理" onclick="adminUserSearch()" class="gotoaddPage"/>
                 </li>
             </div>
         </form>
@@ -116,14 +116,14 @@
 		}
 		$('#orderSearch').on('click', function() {
 			if (true == cha(document.getElementById("form1"))) {
-				document.getElementById("form1").action = "/admin/inRecordSearch";
+				document.getElementById("form1").action = "/super/inRecordSearch";
 				document.getElementById("form1").submit();
 			}
 		})
 
-		//进入预登记查询功能
-		function goOrderAll(){
-			window.location.href="/admin/goOrderAll";
+		//进入操作员查询
+		function adminUserSearch(){
+			window.location.href="/super/adminUserSearch";
 		}
 
 </script>

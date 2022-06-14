@@ -61,6 +61,27 @@ public class AdminController {
     @Resource
     JobInRecordMapper jobInRecordMapper;
 
+    @Resource
+    AdminUserMapper adminUserMapper;
+
+    @RequestMapping("/goLogin")
+    public String goLogin() {
+        return "adminLogin";
+    }
+
+    @PostMapping("/login")
+    public String login(AdminUser adminUser, HttpSession session, HttpServletRequest request) {
+        AdminUser adminUserQuery = adminUserMapper.login(adminUser);
+        if (adminUserQuery != null) {
+            session.setAttribute("adminUserName", adminUser.getName());
+            // 跳转到预登记查询controller
+            return "forward:/admin/goOrderAll";
+        } else {
+            return "adminLogin";
+        }
+
+    }
+
     private void setInitNoTime(HttpServletRequest request) {
         List<JobArea> jobAreaList = jobAreaMapper.findAll();
         List<JobType> jobTypeList = jobTypeMapper.findAll();
@@ -271,27 +292,6 @@ public class AdminController {
         // 增加修改记录
         addUpdateInRecord(session.getAttribute("adminUserName").toString(), jobWarnMapper.selectByPrimaryKey(id), new JobWarn());
         jobWarnMapper.deleteByPrimaryKey(id);
-    }
-
-    @RequestMapping("/admin/inRecordSearch")
-    public String inRecordSearch(OrderSearch orderSearch, HttpServletRequest request) {
-        if (orderSearch == null || orderSearch.getStartDate() == null || orderSearch.getStartDate().equals("") || orderSearch.getEndDate() == null || orderSearch.getEndDate().equals("")) {
-            orderSearch = new OrderSearch();
-            // 当前时间
-            Calendar calendar = Calendar.getInstance();
-            String time = sdf.format(calendar.getTime());
-            orderSearch.setStartDate(time);
-            orderSearch.setEndDate(time + " 23:59:59");
-        } else {
-            if (orderSearch.getEndDate().indexOf(" 23:59:59") == -1) {
-                orderSearch.setEndDate(orderSearch.getEndDate() + " 23:59:59");
-            }
-        }
-        List<JobInRecord> jobInRecordList = jobInRecordMapper.selectByOrderSearch(orderSearch);
-        request.setAttribute("jobInRecordList", jobInRecordList);
-        request.setAttribute("orderSearchNew", orderSearch);
-
-        return "admin/inRecord";
     }
 
     private void addUpdateInRecord(String operName, Object oriObj, Object newObj) {
