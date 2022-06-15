@@ -38,13 +38,13 @@
                     <div class="rbox">
                         <label th:each="jobGoods,status:${jobGoodsList}">
                             <input type="radio" name="goodsId" th:value="${jobGoods.id }" th:checked="${status.count==1 or jobOrderUpdate.goodsId == jobGoods.id}" th:text="${jobGoods.name }"></input>
+                            <input type="text" placeholder="其它请输入具体货名" name="goodsName" id="goodsName" th:value="${jobOrderUpdate.goodsId == jobGoods.id?jobOrderUpdate.goodsName:''}" th:if="${jobGoods.name == '其它'}" />
                         </label>
-                        <input type="hidden" name="goodsName" id="goodsName" />
                     </div>
                 </li>
                 <li>
                     <span>船名航次：</span>
-                    <input type="text" placeholder="必填项" name="vesselVoyage" id="vesselVoyage" th:value="${jobOrderUpdate.vesselVoyage}"/>
+                    <input type="text" placeholder="集港、荒料石、卷钢可不填" name="vesselVoyage" id="vesselVoyage" th:value="${jobOrderUpdate.vesselVoyage}"/>
                 </li>
                 <!--                <li>-->
                 <!--                    <span>作业区域：</span>-->
@@ -104,9 +104,16 @@
 
 		function cha(form) {
 		    if (form.vesselVoyage.value.match(/^\s*$/)) {
-				var val=$('input:radio[name="typeId"]:checked')[0].nextSibling.nodeValue;
+				var typeVal=$('input:radio[name="typeId"]:checked')[0].nextSibling.nodeValue;
+				var goodsVal=$('input:radio[name="goodsId"]:checked')[0].nextSibling.nodeValue;
+				//alert($.trim(goodsVal).search("荒料石") != -1);
+				//alert($.trim(goodsVal).search("卷钢") != -1);
+				//alert($.trim(typeVal).search("集港") != -1);
 			    //var val=$('input:radio[name="typeId"]:checked').val();
-                if($.trim(val) != "集港"){
+			    // 集港作业、荒料石、卷钢货物可不填
+                if($.trim(goodsVal).search("荒料石") != -1 || $.trim(goodsVal).search("卷钢") != -1 || $.trim(typeVal).search("集港") != -1){
+
+                }else{
                     form.vesselVoyage.focus();
                     alert("船名航次 不能为空!");
                     return false;
@@ -153,9 +160,13 @@
 				}
 			}
 
-            // 设置typeName和goodsName的名字
+            // 直接赋值typeName
             $('#typeName').attr('value',$('input:radio[name="typeId"]:checked')[0].nextSibling.nodeValue);
-            $('#goodsName').attr('value',$('input:radio[name="goodsId"]:checked')[0].nextSibling.nodeValue);
+            // 当不选择'其它'或者选择'其它'后未输入货名，则直接赋值goodsName
+            var goodsText=$('input:radio[name="goodsId"]:checked')[0].nextSibling.nodeValue;
+            if($.trim(goodsText) !="其它" || form.goodsName.value.match(/^\s*$/)){
+                $('#goodsName').attr('value',$.trim($('input:radio[name="goodsId"]:checked')[0].nextSibling.nodeValue));
+            }
 
 			return true;
 		}
