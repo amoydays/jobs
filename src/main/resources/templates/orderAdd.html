@@ -163,7 +163,7 @@
 		function cha(form) {
 		    // 15点后不新增今天夜班，20点后不新增明天白班
 		    if(form.noShow.value == "1" && form.noShowTomorrow.value == "1"){
-                alert("当前时间段，无法预登记！");
+                alert("当前时间段，无法预登记，只能修改！");
                 return false;
 		    }
 			if (form.vesselVoyage.value.match(/^\s*$/)) {
