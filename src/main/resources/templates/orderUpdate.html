@@ -60,7 +60,7 @@
                     <span>作业时间：</span>
                     <div class="rbox">
                         <label><input type="radio" name="time" th:value="${jobOrderUpdate.time}" checked="true" th:text="${jobOrderUpdate.time}"></input></label>
-                        <label><input type="radio" name="time" th:if="|${today}夜班| != ${jobOrderUpdate.time}" th:value="|${today}夜班|" th:text="|${today}夜班|"></input></label>
+                        <label><input type="radio" name="time" th:if="|${today}夜班| != ${jobOrderUpdate.time}" th:value="|${today}夜班|" th:text="|${today}夜班|" th:disabled="${noShow == '1'}"></input></label>
                         <label><input type="radio" name="time" th:if="|${tomorrow}白班| != ${jobOrderUpdate.time}" th:value="|${tomorrow}白班|" th:text="|${tomorrow}白班|"></input></label>
 <!--                        <label><input type="radio" name="time" th:value="${tomorrow }+'夜班'" th:checked="|${tomorrow}夜班| == ${jobOrderUpdate.time}" th:text="|${tomorrow}夜班|"></input></label>-->
 <!--                        <label><input type="radio" name="time" th:value="${tomorrowNext }+'白班'" th:checked="|${tomorrowNext}白班| == ${jobOrderUpdate.time}" th:text="|${tomorrowNext}白班|"></input></label>-->

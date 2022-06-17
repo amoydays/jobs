@@ -21,7 +21,7 @@
     <div class="searchcont">
         <div class="notice">
             <div class="tc">
-                15点前预登记今天夜班、明天白班；15点后只能进行修改。
+                15点前预登记今天夜班、20点前预登记明天白班。
             </div>
             <div class="pr" th:if="${noticeIsShow == '1'}" th:id="noticeDiv">
                 <p th:text="|公共通知：${jobNotice.content}|" />
@@ -77,7 +77,10 @@
                     <span>作业时间：</span>
                     <div class="rbox">
                         <label><input type="radio" name="time" th:value="${today }+'夜班'" checked="true" th:text="|${today}夜班(19:00-6:00)|" th:disabled="${noShow == '1'}"></input></label>
-                        <label><input type="radio" name="time" th:value="${tomorrow }+'白班'" th:text="|${tomorrow}白班(08:00-18:00)|" th:disabled="${noShow == '1'}"></input></label>
+                        <label><input type="radio" name="time" th:value="${tomorrow }+'白班'" th:text="|${tomorrow}白班(08:00-18:00)|" th:checked="${noShow == '1'}" th:disabled="${noShowTomorrow == '1'}"></input></label>
+                        <input type="hidden" name="noShow" th:value="${noShow}" />
+                        <input type="hidden" name="noShowTomorrow" th:value="${noShowTomorrow}" />
+<!--                        <label><input type="radio" name="time" th:value="${tomorrow }+'白班'" th:text="|${tomorrow}白班(08:00-18:00)|" th:disabled="${noShow == '1'}"></input></label>-->
 <!--                        <label><input type="radio" name="time" th:value="${tomorrow }+'夜班'"-->
 <!--                                      th:text="|${tomorrow}夜班|"></input></label>-->
 <!--                        <label><input type="radio" name="time" th:value="${tomorrowNext }+'白班'"-->
@@ -158,6 +161,11 @@
 		})
 
 		function cha(form) {
+		    // 15点后不新增今天夜班，20点后不新增明天白班
+		    if(form.noShow.value == "1" && form.noShowTomorrow.value == "1"){
+                alert("当前时间段，无法预登记！");
+                return false;
+		    }
 			if (form.vesselVoyage.value.match(/^\s*$/)) {
 			    var typeVal=$('input:radio[name="typeId"]:checked')[0].nextSibling.nodeValue;
 				var goodsVal=$('input:radio[name="goodsId"]:checked')[0].nextSibling.nodeValue;

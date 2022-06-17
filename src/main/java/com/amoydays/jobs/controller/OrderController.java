@@ -43,6 +43,7 @@ public class OrderController {
     }};
 
     private final int timeLimit = 15;
+    private final int timeLimitTomorrow = 20;
     @Resource
     JobAreaMapper jobAreaMapper;
     @Resource
@@ -68,11 +69,18 @@ public class OrderController {
     private void setInit(HttpServletRequest request) {
         // 当前时间
         Calendar calendar = Calendar.getInstance();
-        // 默认预约今天晚班、明天白班，15点之后不预约
+        request.setAttribute("noShow", "0");
+        request.setAttribute("noShowTomorrow", "0");
+        // 默认预约今天晚班、明天白班，15点之后不预约今天晚班
         if (calendar.get(Calendar.HOUR_OF_DAY) >= timeLimit) {
             request.setAttribute("noShow", "1");
             //calendar.add(Calendar.DATE, 1);
         }
+        // 默认预约今天晚班、明天白班，20点之后不预约今天晚班
+        if (calendar.get(Calendar.HOUR_OF_DAY) >= timeLimitTomorrow) {
+            request.setAttribute("noShowTomorrow", "1");
+        }
+
         String today = sdf.format(calendar.getTime());
         calendar.add(Calendar.DATE, 1);
         String tomorrow = sdf.format(calendar.getTime());
@@ -302,20 +310,20 @@ public class OrderController {
     @PostMapping("/orderAdd")
     public String orderAdd(JobOrder jobOrder, HttpServletRequest request, HttpServletResponse response, boolean isAdd) {
         // 15点之后不预约，只能修改
-        if (isAdd) {
-            // 当前时间
-            Calendar calendar = Calendar.getInstance();
-            if (calendar.get(Calendar.HOUR_OF_DAY) >= timeLimit) {
-                // 直接进入查询页面
-                if (jobOrder != null && jobOrder.getTelephone() != null && !jobOrder.getTelephone().equals("")) {
-                    OrderSearch orderSearch = new OrderSearch();
-                    orderSearch.setTelephone(jobOrder.getTelephone());
-                    return orderSearch(orderSearch, request);
-                } else {
-                    return orderSearch(null, request);
-                }
-            }
-        }
+//        if (isAdd) {
+//            // 当前时间
+//            Calendar calendar = Calendar.getInstance();
+//            if (calendar.get(Calendar.HOUR_OF_DAY) >= timeLimit) {
+//                // 直接进入查询页面
+//                if (jobOrder != null && jobOrder.getTelephone() != null && !jobOrder.getTelephone().equals("")) {
+//                    OrderSearch orderSearch = new OrderSearch();
+//                    orderSearch.setTelephone(jobOrder.getTelephone());
+//                    return orderSearch(orderSearch, request);
+//                } else {
+//                    return orderSearch(null, request);
+//                }
+//            }
+//        }
 
         String date = jobOrder.getTime().substring(0, 10);
         String duty = jobOrder.getTime().substring(10);
@@ -372,6 +380,12 @@ public class OrderController {
 
     @GetMapping("goUpdate")
     public String goUpdate(JobOrder jobOrder, HttpServletRequest request) {
+        // 当前时间
+        Calendar calendar = Calendar.getInstance();
+        // 默认预约今天晚班、明天白班，15点之后不预约今天晚班
+        if (calendar.get(Calendar.HOUR_OF_DAY) >= timeLimit) {
+            request.setAttribute("noShow", "1");
+        }
         if (jobOrder != null) {
             setInit(request);
             request.setAttribute("jobOrderUpdate", jobOrderMapper.selectByPrimaryKey(jobOrder.getId()));
