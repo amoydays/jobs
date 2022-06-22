@@ -1,5 +1,6 @@
 package com.amoydays.jobs.controller;
 
+import com.amoydays.jobs.common.ExcelUtil;
 import com.amoydays.jobs.dao.*;
 import com.amoydays.jobs.entity.*;
 import com.amoydays.jobs.vo.OrderSearch;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
@@ -36,6 +38,17 @@ public class AdminController {
         put("duty", "作业班别");
         put("isRead", "是否已读");
         put("content", "消息内容");
+    }};
+
+    private final List<String> columnList = new ArrayList<>() {{
+        add("序号");
+        add("日期");
+        add("类型");
+        add("单位");
+        add("货名");
+        add("船名航次");
+        add("件数");
+        add("重量");
     }};
     @Resource
     JobAreaMapper jobAreaMapper;
@@ -64,11 +77,24 @@ public class AdminController {
     @Resource
     AdminUserMapper adminUserMapper;
 
+    /**
+     * 进入登录页面
+     *
+     * @return
+     */
     @RequestMapping("/goLogin")
     public String goLogin() {
         return "adminLogin";
     }
 
+    /**
+     * 管理员登录
+     *
+     * @param adminUser
+     * @param session
+     * @param request
+     * @return
+     */
     @PostMapping("/login")
     public String login(AdminUser adminUser, HttpSession session, HttpServletRequest request) {
         AdminUser adminUserQuery = adminUserMapper.login(adminUser);
@@ -82,6 +108,11 @@ public class AdminController {
 
     }
 
+    /**
+     * 初始化数据（不带日期）
+     *
+     * @param request
+     */
     private void setInitNoTime(HttpServletRequest request) {
         List<JobArea> jobAreaList = jobAreaMapper.findAll();
         List<JobType> jobTypeList = jobTypeMapper.findAll();
@@ -91,6 +122,11 @@ public class AdminController {
         request.setAttribute("jobGoodsList", jobGoodsList);
     }
 
+    /**
+     * 初始化OrderSearch（当天日期）
+     *
+     * @param orderSearch
+     */
     //默认查询当天夜班的数据
     private void setInitOrderSearchToday(OrderSearch orderSearch) {
         // 当前时间
@@ -101,6 +137,12 @@ public class AdminController {
         orderSearch.setEndDuty("夜班");
     }
 
+    /**
+     * 进入内部查询页面
+     *
+     * @param request
+     * @return
+     */
     @RequestMapping("/admin/goOrderAll")
     public String goOrderAll(HttpServletRequest request) {
         setInitNoTime(request);
@@ -111,6 +153,13 @@ public class AdminController {
         return "admin/orderInfoAll";
     }
 
+    /**
+     * 根据OrderSearch条件查询
+     *
+     * @param orderSearch
+     * @param request
+     * @return
+     */
     @PostMapping("/admin/orderSearchAll")
     public String orderSearchAll(OrderSearch orderSearch, HttpServletRequest request) {
         if (orderSearch != null) {
@@ -125,6 +174,54 @@ public class AdminController {
         return "admin/orderInfoAll";
     }
 
+    /**
+     * 根据OrderSearch条件下载Excel
+     *
+     * @param orderSearch
+     * @param request
+     * @param response
+     * @return
+     */
+    @PostMapping("/admin/download")
+    @ResponseBody
+    public void download(OrderSearch orderSearch, HttpServletRequest request, HttpServletResponse response) {
+        if (orderSearch == null) {
+            orderSearch = new OrderSearch();
+        }
+        if (orderSearch.getStartDate() == null || orderSearch.getStartDate().equals("")) {
+            setInitOrderSearchToday(orderSearch);
+        }
+        List<JobOrder> jobOrderList = jobOrderMapper.selectByOrderSearch(orderSearch);
+        Calendar calendar = Calendar.getInstance();
+        String fileName = sdf.format(calendar.getTime()).concat("order.xlsx");
+        List<List<Object>> dataList = new ArrayList<>();
+        for (JobOrder order : jobOrderList) {
+            List<Object> entityList = new ArrayList<>();
+            entityList.add(order.getTime());
+            entityList.add(order.getTypeName());
+            entityList.add(order.getDriver());
+            entityList.add(order.getGoodsName());
+            entityList.add(order.getVesselVoyage());
+            if (order.getGoodsNum() == null) {
+                entityList.add(0);
+            } else {
+                entityList.add(order.getGoodsNum());
+            }
+            if (order.getWeight() == null) {
+                entityList.add(0);
+            } else {
+                entityList.add(order.getWeight());
+            }
+            dataList.add(entityList);
+        }
+        ExcelUtil.uploadExcelAboutUser(response, fileName, columnList, dataList);
+    }
+
+    /**
+     * 获取UpdateString更新字符串
+     *
+     * @return
+     */
     @GetMapping("/admin/getUpdateString")
     @ResponseBody
     public JobUpdateString getUpdateString() {
@@ -136,6 +233,12 @@ public class AdminController {
         return jobUpdateString;
     }
 
+    /**
+     * 获取UpdateRecord更新记录
+     *
+     * @param request
+     * @return
+     */
     @GetMapping("/admin/goUpdateRecord")
     public String goUpdateRecord(HttpServletRequest request) {
         // 当前时间
@@ -151,6 +254,13 @@ public class AdminController {
         return "admin/orderUpdateRecord";
     }
 
+    /**
+     * UpdateRecord更新记录查询
+     *
+     * @param orderSearch
+     * @param request
+     * @return
+     */
     @PostMapping("/admin/updateRecordSearch")
     public String updateRecordSearch(OrderSearch orderSearch, HttpServletRequest request) {
         if (orderSearch == null) {
@@ -165,6 +275,12 @@ public class AdminController {
         }
     }
 
+    /**
+     * 进入公共通知页面
+     *
+     * @param request
+     * @return
+     */
     @GetMapping("/admin/goNoticeAdd")
     public String goNoticeAdd(HttpServletRequest request) {
         JobNotice jobNotice = jobNoticeMapper.selectTopOne();
@@ -175,6 +291,14 @@ public class AdminController {
         return "admin/noticeAdd";
     }
 
+    /**
+     * 新增公共通知，JobNotice只需要一条记录
+     *
+     * @param jobNotice
+     * @param request
+     * @param session
+     * @return
+     */
     @PostMapping("/admin/noticeAdd")
     public String noticeAdd(JobNotice jobNotice, HttpServletRequest request, HttpSession session) {
         if (jobNotice != null && jobNotice.getContent() != null && !jobNotice.getContent().equals("")) {
@@ -182,7 +306,7 @@ public class AdminController {
             // JobNotice只需要一条记录，Id不用记录更新
             if (ori != null) {
                 ori.setId(null);
-            }else {
+            } else {
                 ori = new JobNotice();
             }
             // 增加修改记录
@@ -197,6 +321,14 @@ public class AdminController {
         return goNoticeAdd(request);
     }
 
+    /**
+     * 进入客户提醒页面
+     *
+     * @param driver
+     * @param telephone
+     * @param request
+     * @return
+     */
     @GetMapping("/admin/goWarnAdd")
     public String goWarnAdd(String driver, String telephone, HttpServletRequest request) {
         request.setAttribute("driver", driver);
@@ -204,6 +336,14 @@ public class AdminController {
         return "admin/warnAdd";
     }
 
+    /**
+     * 新增客户提醒
+     *
+     * @param jobWarn
+     * @param request
+     * @param session
+     * @return
+     */
     @PostMapping("/admin/warnAdd")
     public String warnAdd(JobWarn jobWarn, HttpServletRequest request, HttpSession session) {
         if (jobWarn != null && jobWarn.getContent() != null && !jobWarn.getContent().equals("")) {
@@ -232,6 +372,13 @@ public class AdminController {
         return "admin/warnInfo";
     }
 
+    /**
+     * 根据OrderSearch查询客户提醒
+     *
+     * @param orderSearch
+     * @param request
+     * @return
+     */
     @RequestMapping("/admin/warnSearch")
     public String warnSearch(OrderSearch orderSearch, HttpServletRequest request) {
         if (orderSearch == null || orderSearch.getStartDate() == null || orderSearch.getStartDate().equals("")) {
@@ -250,6 +397,13 @@ public class AdminController {
         return "admin/warnInfo";
     }
 
+    /**
+     * 进入客户提醒修改页面
+     *
+     * @param id
+     * @param request
+     * @return
+     */
     @GetMapping("/admin/goWarnUpdate")
     public String goWarnUpdate(int id, HttpServletRequest request) {
         JobWarn jobWarn = jobWarnMapper.selectByPrimaryKey(id);
@@ -258,6 +412,14 @@ public class AdminController {
         return "admin/warnUpdate";
     }
 
+    /**
+     * 客户提醒修改页面
+     *
+     * @param jobWarn
+     * @param request
+     * @param session
+     * @return
+     */
     @PostMapping("/admin/warnUpdate")
     public String warnUpdate(JobWarn jobWarn, HttpServletRequest request, HttpSession session) {
         if (jobWarn != null && jobWarn.getContent() != null && !jobWarn.getContent().equals("")) {
@@ -286,6 +448,12 @@ public class AdminController {
         return "admin/warnInfo";
     }
 
+    /**
+     * 客户提醒删除
+     *
+     * @param id
+     * @param session
+     */
     @GetMapping("/admin/warnDel")
     @ResponseBody
     public void warnDel(int id, HttpSession session) {
@@ -294,6 +462,13 @@ public class AdminController {
         jobWarnMapper.deleteByPrimaryKey(id);
     }
 
+    /**
+     * 增加公共通知和客户提醒修改记录
+     *
+     * @param operName
+     * @param oriObj
+     * @param newObj
+     */
     private void addUpdateInRecord(String operName, Object oriObj, Object newObj) {
         if (oriObj == null || newObj == null) {
             return;

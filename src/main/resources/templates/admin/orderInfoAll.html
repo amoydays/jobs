@@ -82,6 +82,7 @@
                 <li>
                     <input type="button" value="预登记查询" id="orderSearch"/>
                     <input type="button" value="重置" onclick="goOrderAll()" class="gotoaddPage"/>
+                    <input type="button" value="下载" id="download" class="gotoaddPage"/>
                     <input type="button" value="客户更改查询" onclick="goUpdateRecord()" class="gotoaddPage"/>
                     <input type="button" value="公共通知" onclick="goNoticeAdd()" class="gotoaddPage"/>
                     <input type="button" value="客户提醒" onclick="warnSearch()" class="gotoaddPage"/>
@@ -228,6 +229,12 @@
 		$('#orderSearch').on('click', function() {
 			if (true == cha(document.getElementById("form1"))) {
 				document.getElementById("form1").action = "/admin/orderSearchAll";
+				document.getElementById("form1").submit();
+			}
+		})
+		$('#download').on('click', function() {
+			if (true == cha(document.getElementById("form1"))) {
+				document.getElementById("form1").action = "/admin/download";
 				document.getElementById("form1").submit();
 			}
 		})
