@@ -16,18 +16,18 @@
       <arg column="goods_name" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="area_name" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="type_name" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="weight" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="weight" javaType="java.lang.Double" jdbcType="DOUBLE" />
       <arg column="date" javaType="java.util.Date" jdbcType="DATE" />
       <arg column="duty" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="vessel_voyage" javaType="java.lang.String" jdbcType="VARCHAR" />
     </constructor>
   </resultMap>
   <sql id="Base_Column_List">
-    ID, driver, car_num, telephone, goods_info, goods_num, time, type_id, area_id, goods_id, 
+    ID, driver, car_num, telephone, goods_info, goods_num, time, type_id, area_id, goods_id,
     goods_name, area_name, type_name, weight, date, duty, vessel_voyage
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from job_order
     where ID = #{id,jdbcType=VARCHAR}
@@ -66,18 +66,18 @@
     where ID = #{id,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.amoydays.jobs.entity.JobOrder">
-    insert into job_order (ID, driver, car_num, 
-      telephone, goods_info, goods_num, 
-      time, type_id, area_id, 
-      goods_id, goods_name, area_name, 
-      type_name, weight, date, 
-      duty, vessel_voyage)
-    values (#{id,jdbcType=VARCHAR}, #{driver,jdbcType=VARCHAR}, #{carNum,jdbcType=VARCHAR}, 
-      #{telephone,jdbcType=VARCHAR}, #{goodsInfo,jdbcType=VARCHAR}, #{goodsNum,jdbcType=INTEGER}, 
-      #{time,jdbcType=VARCHAR}, #{typeId,jdbcType=VARCHAR}, #{areaId,jdbcType=VARCHAR}, 
-      #{goodsId,jdbcType=VARCHAR}, #{goodsName,jdbcType=VARCHAR}, #{areaName,jdbcType=VARCHAR}, 
-      #{typeName,jdbcType=VARCHAR}, #{weight,jdbcType=INTEGER}, #{date,jdbcType=DATE}, 
-      #{duty,jdbcType=VARCHAR}, #{vesselVoyage,jdbcType=VARCHAR})
+    insert into job_order (ID, driver, car_num,
+    telephone, goods_info, goods_num,
+    time, type_id, area_id,
+    goods_id, goods_name, area_name,
+    type_name, weight, date,
+    duty, vessel_voyage)
+    values (#{id,jdbcType=VARCHAR}, #{driver,jdbcType=VARCHAR}, #{carNum,jdbcType=VARCHAR},
+    #{telephone,jdbcType=VARCHAR}, #{goodsInfo,jdbcType=VARCHAR}, #{goodsNum,jdbcType=INTEGER},
+    #{time,jdbcType=VARCHAR}, #{typeId,jdbcType=VARCHAR}, #{areaId,jdbcType=VARCHAR},
+    #{goodsId,jdbcType=VARCHAR}, #{goodsName,jdbcType=VARCHAR}, #{areaName,jdbcType=VARCHAR},
+    #{typeName,jdbcType=VARCHAR}, #{weight,jdbcType=DOUBLE}, #{date,jdbcType=DATE},
+    #{duty,jdbcType=VARCHAR}, #{vesselVoyage,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.amoydays.jobs.entity.JobOrder">
     insert into job_order
@@ -175,7 +175,7 @@
         #{typeName,jdbcType=VARCHAR},
       </if>
       <if test="weight != null">
-        #{weight,jdbcType=INTEGER},
+        #{weight,jdbcType=DOUBLE},
       </if>
       <if test="date != null">
         #{date,jdbcType=DATE},
@@ -228,7 +228,7 @@
         type_name = #{typeName,jdbcType=VARCHAR},
       </if>
       <if test="weight != null">
-        weight = #{weight,jdbcType=INTEGER},
+        weight = #{weight,jdbcType=DOUBLE},
       </if>
       <if test="date != null">
         date = #{date,jdbcType=DATE},
@@ -245,21 +245,21 @@
   <update id="updateByPrimaryKey" parameterType="com.amoydays.jobs.entity.JobOrder">
     update job_order
     set driver = #{driver,jdbcType=VARCHAR},
-      car_num = #{carNum,jdbcType=VARCHAR},
-      telephone = #{telephone,jdbcType=VARCHAR},
-      goods_info = #{goodsInfo,jdbcType=VARCHAR},
-      goods_num = #{goodsNum,jdbcType=INTEGER},
-      time = #{time,jdbcType=VARCHAR},
-      type_id = #{typeId,jdbcType=VARCHAR},
-      area_id = #{areaId,jdbcType=VARCHAR},
-      goods_id = #{goodsId,jdbcType=VARCHAR},
-      goods_name = #{goodsName,jdbcType=VARCHAR},
-      area_name = #{areaName,jdbcType=VARCHAR},
-      type_name = #{typeName,jdbcType=VARCHAR},
-      weight = #{weight,jdbcType=INTEGER},
-      date = #{date,jdbcType=DATE},
-      duty = #{duty,jdbcType=VARCHAR},
-      vessel_voyage = #{vesselVoyage,jdbcType=VARCHAR}
+    car_num = #{carNum,jdbcType=VARCHAR},
+    telephone = #{telephone,jdbcType=VARCHAR},
+    goods_info = #{goodsInfo,jdbcType=VARCHAR},
+    goods_num = #{goodsNum,jdbcType=INTEGER},
+    time = #{time,jdbcType=VARCHAR},
+    type_id = #{typeId,jdbcType=VARCHAR},
+    area_id = #{areaId,jdbcType=VARCHAR},
+    goods_id = #{goodsId,jdbcType=VARCHAR},
+    goods_name = #{goodsName,jdbcType=VARCHAR},
+    area_name = #{areaName,jdbcType=VARCHAR},
+    type_name = #{typeName,jdbcType=VARCHAR},
+    weight = #{weight,jdbcType=DOUBLE},
+    date = #{date,jdbcType=DATE},
+    duty = #{duty,jdbcType=VARCHAR},
+    vessel_voyage = #{vesselVoyage,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

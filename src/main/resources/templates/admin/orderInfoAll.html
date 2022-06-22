@@ -180,11 +180,11 @@
 				if(weight == ''){
 					weight=0;
 				}
-				weightSum+=parseInt(weight);
+				weightSum+=parseFloat(weight);
 			});
 
 			$("#goodsNumSum").text(goodsNumSum);
-			$("#weightSum").text(weightSum);
+			$("#weightSum").text(weightSum.toFixed(2));
 		});
 
 		//日期控件

@@ -29,7 +29,7 @@ public class JobOrder {
 
     private String typeName;
 
-    private Integer weight;
+    private Double weight;
 
     private Date date;
 
@@ -37,7 +37,7 @@ public class JobOrder {
 
     private String vesselVoyage;
 
-    public JobOrder(String id, String driver, String carNum, String telephone, String goodsInfo, Integer goodsNum, String time, String typeId, String areaId, String goodsId, String goodsName, String areaName, String typeName, Integer weight, Date date, String duty, String vesselVoyage) {
+    public JobOrder(String id, String driver, String carNum, String telephone, String goodsInfo, Integer goodsNum, String time, String typeId, String areaId, String goodsId, String goodsName, String areaName, String typeName, Double weight, Date date, String duty, String vesselVoyage) {
         this.id = id;
         this.driver = driver;
         this.carNum = carNum;
@@ -165,11 +165,11 @@ public class JobOrder {
         this.typeName = typeName == null ? null : typeName.trim();
     }
 
-    public Integer getWeight() {
+    public Double getWeight() {
         return weight;
     }
 
-    public void setWeight(Integer weight) {
+    public void setWeight(Double weight) {
         this.weight = weight;
     }
 
